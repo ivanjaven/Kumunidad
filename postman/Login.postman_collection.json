@@ -44,7 +44,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/login/put",
+					"raw": "http://localhost:3000/api/login/get/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
