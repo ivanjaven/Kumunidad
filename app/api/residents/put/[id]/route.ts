@@ -7,14 +7,14 @@ import { Query } from '@/lib/db-con-helper'
 
 // Define types for query parameters if needed
 type QueryParams = {
-  query: string;
-  values: (string | number | boolean | null)[];
-};
+  query: string
+  values: (string | number | boolean | null)[]
+}
 
 // Define the PUT function for handling update requests
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   try {
     // Log the request and parameters for debugging
@@ -33,7 +33,12 @@ export async function PUT(
 
     // Extract keys and values from the body
     const fieldsToUpdate = Object.keys(body)
-    const valuesToUpdate = Object.values(body) as (string | number | boolean | null)[]
+    const valuesToUpdate = Object.values(body) as (
+      | string
+      | number
+      | boolean
+      | null
+    )[]
 
     // Validate that there are fields to update
     if (fieldsToUpdate.length === 0) {
@@ -48,7 +53,10 @@ export async function PUT(
     `
 
     // Prepare the values to be updated in the query
-    const updateValues: (string | number | boolean | null)[] = [...valuesToUpdate, id]
+    const updateValues: (string | number | boolean | null)[] = [
+      ...valuesToUpdate,
+      id,
+    ]
 
     // Execute the UPDATE query using the Query function
     const result = await Query({
