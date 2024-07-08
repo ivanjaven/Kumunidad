@@ -4,29 +4,30 @@ import { APIErrHandler } from '@/lib/api-err-handler'
 import { APILogger } from '@/lib/api-req-logger'
 import { Query } from '@/lib/db-con-helper'
 
-export async function PUT(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     APILogger(request, null)
 
     const body = await request.json()
-    const is_archived = body.is_archived
+    const document_id = body.document_id
     const resident_id = body.resident_id
-
-
-    if (!is_archived || !resident_id) {
+    const issued_date = body.issued_date
+    const issued_by = body.issued_by
+    
+    if (!document_id || !resident_id || !issued_by) {
       return APIResponse(
-        { error: 'All parameters are required' },
+        { error: 'All parameters needed are required' },
         400,
       )
     }
 
     const residents = await Query({
-      query: 'UPDATE residents SET is_archived = ? WHERE resident_id = ?',
-      values: [is_archived, resident_id],
+      query: 'INSERT INTO issued_documents (document_id, resident_id, issued_date, issued_by) VALUES (?, ?, CURRENT_TIMESTAMP, ?)',
+      values: [document_id, resident_id, issued_by],
     })
 
     if (residents.length === 0) {
-      return APIResponse({ error: 'Residents not found' }, 404)
+      return APIResponse({ error: 'Resident not found' }, 404)
     }
 
     return APIResponse(residents, 200)

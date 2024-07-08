@@ -9,11 +9,13 @@ export async function PUT(request: NextRequest) {
     APILogger(request, null)
 
     const body = await request.json()
-    const is_archived = body.is_archived
+    const document_id = body.document_id
     const resident_id = body.resident_id
+    const issued_date = body.issued_date
+    const issued_by = body.issued_by
+    const issued_document_id = body.issued_document_id
 
-
-    if (!is_archived || !resident_id) {
+    if (!document_id || !issued_document_id) {
       return APIResponse(
         { error: 'All parameters are required' },
         400,
@@ -21,8 +23,8 @@ export async function PUT(request: NextRequest) {
     }
 
     const residents = await Query({
-      query: 'UPDATE residents SET is_archived = ? WHERE resident_id = ?',
-      values: [is_archived, resident_id],
+      query: 'UPDATE issued_documents SET document_id = ? WHERE issued_document_id = ?',
+      values: [document_id, issued_document_id],
     })
 
     if (residents.length === 0) {

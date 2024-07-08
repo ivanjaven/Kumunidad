@@ -15,33 +15,36 @@ export async function POST(request: NextRequest) {
     const last_name = body.last_name
     const middle_name = body.middle_name
     const gender = body.gender
+    const image_base64 = body.image_base64
+    const fingerprint_base64 = body.fingerprint_base64
     const date_of_birth = body.date_of_birth
-    const status_id = body.status_id
+    const civil_status = body.civil_status
+    const barangay_status = body.barangay_status
     const address_id = body.address_id
     const contact_id = body.contact_id
     const occupation_id = body.occupation_id
     const nationality_id = body.nationality_id
     const religion_id = body.religion_id
     const benefit_id = body.benefit_id
-    const flag_archived = body.flag_archived
+    const is_archived = body.is_archived
 
-    if (!full_name || !first_name || !last_name || !middle_name || !gender || !date_of_birth || !flag_archived || !status_id || !address_id || !contact_id || !occupation_id || !nationality_id || !religion_id || !benefit_id) {
+    if (!full_name || !first_name || !last_name || !middle_name || !gender || !date_of_birth || !civil_status || !barangay_status || !address_id || !contact_id || !occupation_id || !nationality_id || !religion_id || !benefit_id) {
       return APIResponse(
         { error: 'All parameters needed are required' },
         400,
       )
     }
 
-    const citizens = await Query({
-      query: 'INSERT INTO citizens (full_name, first_name, last_name, middle_name, gender, date_of_birth, status_id, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id, flag_archived) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ',
-      values: [full_name, first_name, last_name, middle_name, gender, date_of_birth, status_id, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id, flag_archived],
+    const residents = await Query({
+      query: 'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ',
+      values: [full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id],
     })
 
-    if (citizens.length === 0) {
-      return APIResponse({ error: 'Citizen not found' }, 404)
+    if (residents.length === 0) {
+      return APIResponse({ error: 'Resident not found' }, 404)
     }
 
-    return APIResponse(citizens, 200)
+    return APIResponse(residents, 200)
   } catch (error: any) {
     console.error('Database query failed:', error)
 
