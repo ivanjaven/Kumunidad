@@ -11,13 +11,22 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"full_name\": \"Firstname244345 M Lastname334345\",\r\n\"first_name\": \"Firstname244345\",\r\n\"last_name\": \"Lastname334345\",\r\n\"middle_name\": \"Middlename34315\",\r\n\"gender\": \"male\",\r\n\"image_base64\" : \"base64encodedimage\",\r\n\"fingerprint_base64\" : \"base64encodedfingerprint\",\r\n\"date_of_birth\": \"1999-11-12\",\r\n\"civil_status\": \"Single\",\r\n\"barangay_status\" : \"In\",\r\n\"address_id\": \"1\",\r\n\"contact_id\": \"1\",\r\n\"occupation_id\": \"1\",\r\n\"nationality_id\": \"1\",\r\n\"religion_id\": \"1\",\r\n\"benefit_id\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://localhost:3306/api/resident/post",
+					"raw": "http://localhost:3000/api/resident/post",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3306",
+					"port": "3000",
 					"path": [
 						"api",
 						"resident",
@@ -34,7 +43,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"flag_archived\": \"true\",\r\n  \"citizen_id\": \"1\"\r\n}\r\n",
+					"raw": "{\r\n  \"is_archived\": \"1\",\r\n  \"resident_id\": \"4\"\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"

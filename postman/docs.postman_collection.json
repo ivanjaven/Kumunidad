@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "fad11da1-6ca3-4376-b64d-33db360e5ce5",
+		"name": "docs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36273434"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/docs/put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"document_id\": \"1\",\r\n  \"issued_document_id\": \"1\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/docs/put",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"docs",
+						"put"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/docs/post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"document_id\": \"1\",\r\n\"resident_id\": \"2\",\r\n\"issued_by\" : \"Admin\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/docs/post",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"docs",
+						"post"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
