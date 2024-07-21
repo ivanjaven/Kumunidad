@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
     APILogger(request, null)
 
     const body = await request.json()
-  
+
     const full_name = body.full_name
     const first_name = body.first_name
     const last_name = body.last_name
@@ -28,16 +28,46 @@ export async function POST(request: NextRequest) {
     const benefit_id = body.benefit_id
     const is_archived = body.is_archived
 
-    if (!full_name || !first_name || !last_name || !middle_name || !gender || !date_of_birth || !civil_status || !barangay_status || !address_id || !contact_id || !occupation_id || !nationality_id || !religion_id || !benefit_id) {
-      return APIResponse(
-        { error: 'All parameters needed are required' },
-        400,
-      )
+    if (
+      !full_name ||
+      !first_name ||
+      !last_name ||
+      !middle_name ||
+      !gender ||
+      !date_of_birth ||
+      !civil_status ||
+      !barangay_status ||
+      !address_id ||
+      !contact_id ||
+      !occupation_id ||
+      !nationality_id ||
+      !religion_id ||
+      !benefit_id
+    ) {
+      return APIResponse({ error: 'All parameters needed are required' }, 400)
     }
 
     const residents = await Query({
-      query: 'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ',
-      values: [full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id],
+      query:
+        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ',
+      values: [
+        full_name,
+        first_name,
+        last_name,
+        middle_name,
+        gender,
+        image_base64,
+        fingerprint_base64,
+        date_of_birth,
+        civil_status,
+        barangay_status,
+        address_id,
+        contact_id,
+        occupation_id,
+        nationality_id,
+        religion_id,
+        benefit_id,
+      ],
     })
 
     if (residents.length === 0) {

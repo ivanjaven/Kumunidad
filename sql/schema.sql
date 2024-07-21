@@ -184,31 +184,19 @@ CREATE TABLE IF NOT EXISTS residents (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores information about residents';
 
 -- =============================================
--- Table structure for document types
+-- Table structure for documents
 -- =============================================
 CREATE TABLE IF NOT EXISTS documents (
-    document_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL COMMENT 'Title of the document',
-    required_fields JSON COMMENT 'JSON array of required fields for the document',
-    UNIQUE KEY uk_document_title (title),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores types of documents';
-
--- =============================================
--- Table structure for issued documents
--- =============================================
-CREATE TABLE IF NOT EXISTS issued_documents (
-    issued_document_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    document_id INT UNSIGNED NOT NULL COMMENT 'ID of the document type',
+    document_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    document_title ENUM('Barangay Business Clearance', 'Barangay Clearance', 'Blotter', 'Certificate of Indigency', 'Certificate of Residency') NOT NULL COMMENT 'Title of the document',
     resident_id BIGINT UNSIGNED NOT NULL COMMENT 'ID of the resident',
-    issued_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Date of issuance',
+    required_fields JSON COMMENT 'JSON array of required fields for the document',
     issued_by VARCHAR(255) COMMENT 'Name of the person who issued the document',
-    FOREIGN KEY fk_issued_document_type (document_id) REFERENCES documents(document_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    captain_name VARCHAR(255) COMMENT 'Name of the barangay captain who sitting that term',
+    issued_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Date of issuance',
     FOREIGN KEY fk_issued_document_resident (resident_id) REFERENCES residents(resident_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_issued_date (issued_date)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Stores information about issued documents';
 
 -- =============================================
@@ -296,12 +284,14 @@ INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, im
 VALUES ('John Doe', 'John', 'Doe', 'Middle', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '1990-01-01', 'Single', 'In', 1, 1, 1, 1, 1, 1, FALSE);
 
 -- Insert into documents
-INSERT INTO documents (title, required_fields)
-VALUES ('Birth Certificate', '["Name", "Date of Birth", "Place of Birth"]');
+INSERT INTO documents (document_title, resident_id, required_fields, issued_by, captain_name, issued_date) 
+VALUES 
+('Barangay Business Clearance', 1, '{"Business Name": "ABC Corp", "Address": "123 Main St"}', 'Officer A', 'Captain X', CURRENT_TIMESTAMP),
+('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Officer B', 'Captain Y', CURRENT_TIMESTAMP),
+('Blotter', 1, '{"Incident Description": "Theft Report", "Date": "2024-07-03"}', 'Officer C', 'Captain Z', CURRENT_TIMESTAMP),
+('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Officer D', 'Captain X', CURRENT_TIMESTAMP),
+('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Officer E', 'Captain Y', CURRENT_TIMESTAMP);
 
--- Insert into issued_documents
-INSERT INTO issued_documents (document_id, resident_id, issued_date, issued_by)
-VALUES (1, 1, CURRENT_TIMESTAMP, 'Admin');
 
 -- Insert into roles
 INSERT INTO roles (role_name)

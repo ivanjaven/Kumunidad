@@ -12,10 +12,7 @@ export async function DELETE(request: NextRequest) {
     const user_id = body.user_id
 
     if (!user_id) {
-      return APIResponse(
-        { error: 'All parameters needed are required' },
-        400,
-      )
+      return APIResponse({ error: 'All parameters needed are required' }, 400)
     }
 
     const residents = await Query({

@@ -13,16 +13,14 @@ export async function POST(request: NextRequest) {
     const resident_id = body.resident_id
     const issued_date = body.issued_date
     const issued_by = body.issued_by
-    
+
     if (!document_id || !resident_id || !issued_by) {
-      return APIResponse(
-        { error: 'All parameters needed are required' },
-        400,
-      )
+      return APIResponse({ error: 'All parameters needed are required' }, 400)
     }
 
     const residents = await Query({
-      query: 'INSERT INTO issued_documents (document_id, resident_id, issued_date, issued_by) VALUES (?, ?, CURRENT_TIMESTAMP, ?)',
+      query:
+        'INSERT INTO issued_documents (document_id, resident_id, issued_date, issued_by) VALUES (?, ?, CURRENT_TIMESTAMP, ?)',
       values: [document_id, resident_id, issued_by],
     })
 

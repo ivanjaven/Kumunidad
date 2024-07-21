@@ -12,12 +12,8 @@ export async function PUT(request: NextRequest) {
     const is_archived = body.is_archived
     const resident_id = body.resident_id
 
-
     if (!is_archived || !resident_id) {
-      return APIResponse(
-        { error: 'All parameters are required' },
-        400,
-      )
+      return APIResponse({ error: 'All parameters are required' }, 400)
     }
 
     const residents = await Query({

@@ -14,14 +14,12 @@ export async function POST(request: NextRequest) {
     const password = body.password
     const username = body.username
     if (!username || !password || !role_id || !fingerprint_base64) {
-      return APIResponse(
-        { error: 'All parameters needed are required' },
-        400,
-      )
+      return APIResponse({ error: 'All parameters needed are required' }, 400)
     }
 
     const residents = await Query({
-      query: 'INSERT INTO auth (username, password, role_id, fingerprint_base64) VALUES (?, ?, ?, ?);',
+      query:
+        'INSERT INTO auth (username, password, role_id, fingerprint_base64) VALUES (?, ?, ?, ?);',
       values: [username, password, role_id, fingerprint_base64],
     })
 
