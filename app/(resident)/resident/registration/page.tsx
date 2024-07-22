@@ -1,9 +1,11 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Check } from 'lucide-react'
-import PersonalDetailPage from './registration'
+import PersonalDetailPage from '../../_components/personal-detail-page'
+import { toast } from 'sonner'
+import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
 
 // Define steps with additional title and subtitle for each step
 const steps = [
@@ -32,12 +34,126 @@ const Step3Content = () => <div>Review & Submit Content</div>
 
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(1)
-  const [formData, setFormData] = useState({})
+
+  // Form data state
+  const [formData, setFormData] = useState<PersonalDetailTypedef>({
+    surname: '',
+    name: '',
+    middleName: '',
+    day: '',
+    month: '',
+    year: '',
+    gender: '',
+    status: '',
+    street: '',
+    houseNumber: '',
+    email: '',
+    phone: '',
+    occupation: '',
+    nationality: '',
+    religion: '',
+    benefits: '',
+  })
+
+  // Generic handler for input and select changes
+  const handleChange = useCallback(
+    (id: keyof PersonalDetailTypedef, value: string) => {
+      setFormData((prev) => ({ ...prev, [id]: value }))
+    },
+    [],
+  )
+
+  const validateStep1 = () => {
+    const requiredFields: (keyof PersonalDetailTypedef)[] = [
+      'surname',
+      'name',
+      'day',
+      'month',
+      'year',
+      'gender',
+      'status',
+      'street',
+      'houseNumber',
+      'occupation',
+      'nationality',
+      'religion',
+      'benefits',
+    ]
+
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        let message = ''
+        switch (field) {
+          case 'surname':
+            message =
+              'Please enter your surname (family name). This is a required field.'
+            break
+          case 'name':
+            message = 'Please enter your given name. This is a required field.'
+            break
+          case 'day':
+          case 'month':
+          case 'year':
+            message =
+              'Please select your complete date of birth. All parts (day, month, and year) are required.'
+            break
+          case 'gender':
+            message =
+              'Please select your gender from the provided options. This information is required.'
+            break
+          case 'status':
+            message =
+              'Please indicate your marital status. This information is necessary for our records.'
+            break
+          case 'street':
+            message =
+              'Please select your street from the dropdown list. This is part of your required address information.'
+            break
+          case 'houseNumber':
+            message =
+              'Please enter your house or apartment number. This completes your address information.'
+            break
+          case 'occupation':
+            message =
+              'Please select your current occupation from the list. This information is required for our records.'
+            break
+          case 'nationality':
+            message =
+              'Please select your nationality. This is a required piece of information for our database.'
+            break
+          case 'religion':
+            message =
+              'Please select your religion or belief system. While personal, this information is required for our records.'
+            break
+          case 'benefits':
+            message =
+              'Please select any applicable benefits. If none apply, please choose "None" from the list. This field is required.'
+            break
+          default:
+            message = `The field "${field}" is required. Please provide this information to proceed.`
+        }
+
+        toast.error(message, {
+          duration: 5000,
+          position: 'bottom-right',
+          style: {
+            background: '#F3F4F6',
+            color: '#111827',
+            border: '1px solid #D1D5DB',
+            borderRadius: '8px',
+            padding: '16px',
+            maxWidth: '350px',
+          },
+        })
+        return false
+      }
+    }
+    return true
+  }
 
   const handleNext = () => {
-    if (currentStep === 1) {
-      console.log('Form Data:', formData)
-    }
+    if (currentStep === 1 && !validateStep1()) return
+    if (currentStep === 1) console.log('Form Data:', formData)
     setCurrentStep((prev) => Math.min(prev + 1, steps.length))
   }
 
@@ -50,7 +166,12 @@ const Stepper = () => {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <PersonalDetailPage onFormDataChange={setFormData} />
+        return (
+          <PersonalDetailPage
+            formData={formData}
+            onFormDataChange={handleChange}
+          />
+        )
       case 2:
         return <Step2Content />
       case 3:

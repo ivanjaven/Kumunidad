@@ -1,5 +1,5 @@
 // Define form data interface
-export interface FormData {
+export interface PersonalDetailTypedef {
   surname: string
   name: string
   middleName: string
