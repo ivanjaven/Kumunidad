@@ -26,20 +26,21 @@ export async function GET(
     const user = await Query({
       query: ` 
       SELECT 
-        citizens.citizen_id,
-        citizens.full_name,
-        citizens.first_name,
-        citizens.last_name,
-        citizens.middle_name,
-        citizens.gender,
-        citizens.date_of_birth,
-        citizens.status_id,
-        citizens.address_id,
-        citizens.contact_id,
-        citizens.occupation_id,
-        citizens.nationality_id,
-        citizens.religion_id,
-        citizens.benefit_id,
+        residents.resident_id,
+        residents.full_name,
+        residents.first_name,
+        residents.last_name,
+        residents.middle_name,
+        residents.gender,
+        residents.date_of_birth,
+        residents.civil_status,
+        residents.image_base64,
+        residents.address_id,
+        residents.contact_id,
+        residents.occupation_id,
+        residents.nationality_id,
+        residents.religion_id,
+        residents.benefit_id,
         addresses.house_number_id,
         addresses.street_id,
         addresses.barangay_id,
@@ -47,30 +48,26 @@ export async function GET(
         addresses.province_id,
         contacts.email,
         contacts.mobile,
-        status.status_name,
         religions.religion_name,
         occupations.occupation_name,
         nationalities.nationality_name,
         benefits.benefit_name,
-        house_numbers.house_number,
+        hn1.house_number AS house_number,
         streets.street_name,
-        barangays.barangay_name,
-        municipalities.municipality_name,
-        provinces.province_name
-      FROM citizens
-      LEFT JOIN addresses ON citizens.address_id = addresses.address_id
-      LEFT JOIN contacts ON citizens.contact_id = contacts.contact_id
-      LEFT JOIN occupations ON citizens.occupation_id = occupations.occupation_id
-      LEFT JOIN status ON citizens.status_id = status.status_id
-      LEFT JOIN benefits ON citizens.benefit_id = benefits.benefit_id
-      LEFT JOIN nationalities ON citizens.nationality_id = nationalities.nationality_id
-      LEFT JOIN religions ON citizens.religion_id = religions.religion_id
-      LEFT JOIN house_numbers ON addresses.house_number_id = house_numbers.house_number_id
-      LEFT JOIN streets ON house_numbers.street_id = streets.street_id
-      LEFT JOIN barangays ON streets.barangay_id = barangays.barangay_id
-      LEFT JOIN municipalities ON barangays.municipality_id = municipalities.municipality_id
-      LEFT JOIN provinces ON municipalities.province_id = provinces.province_id
-      WHERE citizens.citizen_id = ?`,
+        barangays.barangay_name
+
+      FROM residents
+
+      LEFT JOIN addresses ON residents.address_id = addresses.address_id
+      LEFT JOIN contacts ON residents.contact_id = contacts.contact_id
+      LEFT JOIN occupations ON residents.occupation_id = occupations.occupation_id
+      LEFT JOIN benefits ON residents.benefit_id = benefits.benefit_id
+      LEFT JOIN nationalities ON residents.nationality_id = nationalities.nationality_id
+      LEFT JOIN religions ON residents.religion_id = religions.religion_id
+      LEFT JOIN house_numbers AS hn1 ON addresses.house_number_id = hn1.house_number_id
+      LEFT JOIN streets ON addresses.street_id = streets.street_id
+      LEFT JOIN barangays ON addresses.barangay_id = barangays.barangay_id
+      WHERE residents.resident_id = ?`,
       values: [id],
     })
 
