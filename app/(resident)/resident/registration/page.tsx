@@ -178,12 +178,7 @@ const Stepper = () => {
         return (
           <IdentityVerification
             formData={formData}
-            onFormDataChange={function (
-              id: keyof RegistrationTypedef,
-              value: string,
-            ): void {
-              throw new Error('Function not implemented.')
-            }}
+            onFormDataChange={handleChange}
           />
         )
       case 3:
