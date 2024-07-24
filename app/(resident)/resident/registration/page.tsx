@@ -6,6 +6,9 @@ import { Check } from 'lucide-react'
 import PersonalDetailPage from '../../_components/personal-detail-page'
 import { toast } from 'sonner'
 import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
+import IdentityVerification from '../../_components/verification'
+import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
+import Review from '../../_components/review'
 
 // Define steps with additional title and subtitle for each step
 const steps = [
@@ -29,9 +32,6 @@ const steps = [
   },
 ]
 
-const Step2Content = () => <div>Contact Information Content</div>
-const Step3Content = () => <div>Review & Submit Content</div>
-
 const Stepper = () => {
   const [currentStep, setCurrentStep] = useState(1)
 
@@ -53,6 +53,8 @@ const Stepper = () => {
     nationality: '',
     religion: '',
     benefits: '',
+    image_base64: '',
+    fingerprint_base64: '',
   })
 
   // Generic handler for input and select changes
@@ -173,9 +175,19 @@ const Stepper = () => {
           />
         )
       case 2:
-        return <Step2Content />
+        return (
+          <IdentityVerification
+            formData={formData}
+            onFormDataChange={function (
+              id: keyof RegistrationTypedef,
+              value: string,
+            ): void {
+              throw new Error('Function not implemented.')
+            }}
+          />
+        )
       case 3:
-        return <Step3Content />
+        return <Review formData={formData} />
       default:
         return null
     }

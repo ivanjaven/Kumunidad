@@ -1,5 +1,5 @@
 // Define form data interface
-export interface PersonalDetailTypedef {
+export interface RegistrationTypedef {
   surname: string
   name: string
   middleName: string
