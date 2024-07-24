@@ -3,11 +3,10 @@
 import React, { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Check } from 'lucide-react'
-import PersonalDetailPage from '../../_components/personal-detail-page'
+import PersonalDetailPage from '../../../../components/personal-detail-page'
 import { toast } from 'sonner'
 import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
 import IdentityVerification from '../../_components/verification'
-import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import Review from '../../_components/review'
 
 // Define steps with additional title and subtitle for each step
