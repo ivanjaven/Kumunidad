@@ -1,39 +1,34 @@
 'use client'
 
 import React from 'react'
-
-import { SelectHelper } from '@/lib/static/select-helper'
-import { YearHelper } from '@/lib/static/year-helper'
-import { dummyData } from '@/lib/static/dummyData'
-
 import { CustomSelectField } from '@/components/custom-select-field'
 import { CustomInputField } from '@/components/custom-input-field'
 import { CustomFormField } from '@/components/custom-form-field'
-import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
+import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
+import { capitalize } from '@/lib/utils'
+import { dummyData } from '@/lib/static/dummyData'
+import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 
-type PersonalDetailPageProps = {
-  formData: PersonalDetailTypedef
-  onFormDataChange: (id: keyof PersonalDetailTypedef, value: string) => void
+type PersonalDetailProps = {
+  formData: RegistrationTypedef
+  onFormDataChange: (id: keyof RegistrationTypedef, value: string) => void
 }
 
-export default function PersonalDetailPage({
+export function PersonalDetail({
   formData,
   onFormDataChange,
-}: PersonalDetailPageProps): JSX.Element {
+}: PersonalDetailProps): JSX.Element {
   return (
     <section className="mt-8 space-y-8">
       {/* Name fields */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
-        {['surname', 'name', 'middleName'].map((field) => (
-          <CustomFormField
-            key={field}
-            label={field.charAt(0).toUpperCase() + field.slice(1)}
-          >
+        {['surname', 'name', 'middle name'].map((field) => (
+          <CustomFormField key={field} label={capitalize(field)}>
             <CustomInputField
-              id={field as keyof PersonalDetailTypedef}
+              id={field as keyof RegistrationTypedef}
               placeholder={`Enter ${field}`}
               type="text"
-              cache={formData[field as keyof PersonalDetailTypedef]}
+              cache={formData[field as keyof RegistrationTypedef]}
               handleChange={onFormDataChange}
             />
           </CustomFormField>
@@ -47,21 +42,21 @@ export default function PersonalDetailPage({
             <CustomSelectField
               fieldId="day"
               selectPlaceholder="Day"
-              selectOptions={SelectHelper.day}
+              selectOptions={REGISTRATION_CONFIG.dropdownOptions.day}
               cache={formData.day}
               handleChange={onFormDataChange}
             />
             <CustomSelectField
               fieldId="month"
               selectPlaceholder="Month"
-              selectOptions={SelectHelper.month}
+              selectOptions={REGISTRATION_CONFIG.dropdownOptions.month}
               cache={formData.month}
               handleChange={onFormDataChange}
             />
             <CustomSelectField
               fieldId="year"
               selectPlaceholder="Year"
-              selectOptions={YearHelper(1900, new Date().getFullYear())}
+              selectOptions={REGISTRATION_CONFIG.dropdownOptions.year}
               cache={formData.year}
               handleChange={onFormDataChange}
             />
@@ -73,7 +68,7 @@ export default function PersonalDetailPage({
               <CustomSelectField
                 fieldId="gender"
                 selectPlaceholder="Select Gender"
-                selectOptions={SelectHelper.gender}
+                selectOptions={REGISTRATION_CONFIG.dropdownOptions.gender}
                 cache={formData.gender}
                 handleChange={onFormDataChange}
               />
@@ -82,7 +77,7 @@ export default function PersonalDetailPage({
               <CustomSelectField
                 fieldId="status"
                 selectPlaceholder="Select Status"
-                selectOptions={SelectHelper.status}
+                selectOptions={REGISTRATION_CONFIG.dropdownOptions.status}
                 cache={formData.status}
                 handleChange={onFormDataChange}
               />
@@ -105,7 +100,7 @@ export default function PersonalDetailPage({
         <CustomFormField label="House Number">
           <CustomInputField
             id="houseNumber"
-            placeholder="Enter House Number"
+            placeholder="Enter house number"
             type="text"
             cache={formData.houseNumber}
             handleChange={onFormDataChange}
@@ -116,15 +111,12 @@ export default function PersonalDetailPage({
       {/* Contact fields */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
         {['email', 'phone'].map((field) => (
-          <CustomFormField
-            key={field}
-            label={field.charAt(0).toUpperCase() + field.slice(1)}
-          >
+          <CustomFormField key={field} label={capitalize(field)}>
             <CustomInputField
-              id={field as keyof PersonalDetailTypedef}
+              id={field as keyof RegistrationTypedef}
               placeholder={`Enter ${field}`}
               type={field === 'email' ? 'email' : 'number'}
-              cache={formData[field as keyof PersonalDetailTypedef]}
+              cache={formData[field as keyof RegistrationTypedef]}
               handleChange={onFormDataChange}
             />
           </CustomFormField>
@@ -134,15 +126,12 @@ export default function PersonalDetailPage({
       {/* Additional information fields */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-4 sm:gap-8">
         {['occupation', 'nationality', 'religion', 'benefits'].map((field) => (
-          <CustomFormField
-            key={field}
-            label={field.charAt(0).toUpperCase() + field.slice(1)}
-          >
+          <CustomFormField key={field} label={capitalize(field)}>
             <CustomSelectField
-              fieldId={field as keyof PersonalDetailTypedef}
+              fieldId={field as keyof RegistrationTypedef}
               selectPlaceholder={`Select ${field}`}
               selectOptions={dummyData[field as keyof typeof dummyData]}
-              cache={formData[field as keyof PersonalDetailTypedef]}
+              cache={formData[field as keyof RegistrationTypedef]}
               handleChange={onFormDataChange}
             />
           </CustomFormField>

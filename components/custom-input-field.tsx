@@ -1,13 +1,13 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
-import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
+import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 
 export const CustomInputField: React.FC<{
-  id: keyof PersonalDetailTypedef
+  id: keyof RegistrationTypedef
   placeholder: string
   type: string
   cache: string
-  handleChange: (id: keyof PersonalDetailTypedef, value: string) => void
+  handleChange: (id: keyof RegistrationTypedef, value: string) => void
 }> = ({ id, placeholder, type, cache, handleChange }): JSX.Element => (
   <Input
     id={id}

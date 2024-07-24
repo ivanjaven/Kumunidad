@@ -1,21 +1,20 @@
-// Define form data interface
 export interface RegistrationTypedef {
-  surname: string
-  name: string
-  middleName: string
+  benefits: string
   day: string
-  month: string
-  year: string
+  email: string
+  fingerprint_base64: string
   gender: string
+  houseNumber: string
+  image_base64: string
+  middleName: string
+  month: string
+  name: string
+  nationality: string
+  occupation: string
+  phone: string
+  religion: string
   status: string
   street: string
-  houseNumber: string
-  email: string
-  phone: string
-  occupation: string
-  nationality: string
-  religion: string
-  benefits: string
-  fingerprint_base64: string
-  image_base64: string
+  surname: string
+  year: string
 }

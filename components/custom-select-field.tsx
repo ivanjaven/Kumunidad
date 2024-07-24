@@ -6,14 +6,14 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select'
-import { PersonalDetailTypedef } from '@/lib/typedef/personal-detail-typedef'
+import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 
 export const CustomSelectField: React.FC<{
-  fieldId: keyof PersonalDetailTypedef
+  fieldId: keyof RegistrationTypedef
   selectPlaceholder: string
   selectOptions: Array<Record<string, any>>
   cache: string
-  handleChange: (id: keyof PersonalDetailTypedef, value: string) => void
+  handleChange: (id: keyof RegistrationTypedef, value: string) => void
 }> = ({
   fieldId,
   selectPlaceholder,
