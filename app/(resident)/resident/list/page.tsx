@@ -3,8 +3,8 @@ import path from 'path'
 import { Metadata } from 'next'
 import Image from 'next/image'
 import { z } from 'zod'
-import { columns } from '../../_components/columns'
-import { DataTable } from '../../_components/data-table'
+import { columns } from '@/components/columns'
+import { DataTable } from '@/components/data-table'
 import { taskSchema } from '@/data/schema'
 
 export const metadata: Metadata = {

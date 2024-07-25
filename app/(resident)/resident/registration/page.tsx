@@ -7,7 +7,7 @@ import { StepIndicator } from '@/components/step-indicator'
 import { PersonalDetail } from '@/components/personal-detail'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { VerificationDetail } from '@/components/verification-detail'
-import Review from '../../_components/review'
+import { ReviewDetail } from '@/components/review-detail'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 
 // Define props with step types
@@ -111,7 +111,7 @@ export default function RegistrationPage({
           onFormDataChange={handleChange}
         />
       ),
-      3: <Review formData={formData} />,
+      3: <ReviewDetail formData={formData} />,
     }
     return stepComponents[currentStep] || null
   }, [currentStep, formData, handleChange])

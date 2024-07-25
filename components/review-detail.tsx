@@ -14,11 +14,7 @@ import {
 } from 'lucide-react'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 
-export default function Review({
-  formData,
-}: {
-  formData: RegistrationTypedef
-}) {
+export function ReviewDetail({ formData }: { formData: RegistrationTypedef }) {
   return (
     <div className="container mx-auto mt-11 max-w-5xl bg-white p-8">
       <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
