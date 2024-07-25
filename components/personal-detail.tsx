@@ -6,15 +6,17 @@ import { CustomInputField } from '@/components/custom-input-field'
 import { CustomFormField } from '@/components/custom-form-field'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { capitalize } from '@/lib/utils'
-import { dummyData } from '@/lib/static/dummyData'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
+import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
 
 type PersonalDetailProps = {
+  metadata: MetadataTypedef
   formData: RegistrationTypedef
   onFormDataChange: (id: keyof RegistrationTypedef, value: string) => void
 }
 
 export function PersonalDetail({
+  metadata,
   formData,
   onFormDataChange,
 }: PersonalDetailProps): JSX.Element {
@@ -92,7 +94,7 @@ export function PersonalDetail({
           <CustomSelectField
             fieldId="street"
             selectPlaceholder="Select Street"
-            selectOptions={dummyData.street}
+            selectOptions={metadata.street}
             cache={formData.street}
             handleChange={onFormDataChange}
           />
@@ -130,7 +132,7 @@ export function PersonalDetail({
             <CustomSelectField
               fieldId={field as keyof RegistrationTypedef}
               selectPlaceholder={`Select ${field}`}
-              selectOptions={dummyData[field as keyof typeof dummyData]}
+              selectOptions={metadata[field as keyof typeof metadata]}
               cache={formData[field as keyof RegistrationTypedef]}
               handleChange={onFormDataChange}
             />

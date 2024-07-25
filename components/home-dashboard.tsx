@@ -103,6 +103,7 @@ export function HomeDashboard() {
                         src={feature.imageUrl}
                         alt={feature.title}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                         className="object-cover transition-transform duration-300 hover:scale-105"
                       />
                     </div>

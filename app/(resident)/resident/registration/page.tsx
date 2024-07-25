@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import { toast } from 'sonner'
 import { StepIndicator } from '@/components/step-indicator'
 import { PersonalDetail } from '@/components/personal-detail'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { VerificationDetail } from '@/components/verification-detail'
 import { ReviewDetail } from '@/components/review-detail'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
+import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
+import { fetchMetadata } from '@/server/queries/metadata'
+import { toast } from 'sonner'
 
-// Define props with step types
 interface RegistrationPageProps {
   initialStep?: 1 | 2 | 3
 }
@@ -18,7 +19,6 @@ interface RegistrationPageProps {
 export default function RegistrationPage({
   initialStep = 1,
 }: RegistrationPageProps) {
-  // State for current step and form data
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(initialStep)
   const [formData, setFormData] = useState<RegistrationTypedef>({
     benefits: '',
@@ -41,7 +41,27 @@ export default function RegistrationPage({
     year: '',
   })
 
-  // Handle form data changes
+  const [metadata, setMetadata] = useState<MetadataTypedef>({
+    benefits: [],
+    occupation: [],
+    street: [],
+    nationality: [],
+    religion: [],
+  })
+
+  useEffect(() => {
+    async function fetchOptions() {
+      try {
+        const data: MetadataTypedef = await fetchMetadata()
+        setMetadata(data)
+      } catch (error) {
+        toast.error('Error fetching dropdown options. Please try again later.')
+      }
+    }
+
+    fetchOptions()
+  }, [])
+
   const handleChange = useCallback(
     (id: keyof RegistrationTypedef, value: string) => {
       setFormData((prev) => ({ ...prev, [id]: value }))
@@ -49,7 +69,6 @@ export default function RegistrationPage({
     [],
   )
 
-  // Validate current step
   const validateStep = useCallback(() => {
     const requiredFields = REGISTRATION_CONFIG.requiredFields[currentStep]
     const emptyField = requiredFields.find(
@@ -71,13 +90,10 @@ export default function RegistrationPage({
     return true
   }, [formData, currentStep])
 
-  // Handle next step or submit
   const handleNextOrSubmit = useCallback(() => {
     if (validateStep()) {
       if (currentStep === REGISTRATION_CONFIG.steps.length) {
-        // This is the submit action
         console.log('Form Data:', formData)
-        // Here you would typically send the data to your backend
       } else {
         setCurrentStep((prev) => {
           const nextStep = (prev + 1) as 1 | 2 | 3
@@ -87,7 +103,6 @@ export default function RegistrationPage({
     }
   }, [currentStep, validateStep, formData])
 
-  // Handle previous step
   const handlePrev = useCallback(() => {
     setCurrentStep((prev) => {
       const prevStep = (prev - 1) as 1 | 2 | 3
@@ -95,16 +110,20 @@ export default function RegistrationPage({
     })
   }, [])
 
-  // Get current step details
   const currentStepDetails = useMemo(
     () => REGISTRATION_CONFIG.steps[currentStep - 1],
     [currentStep],
   )
 
-  // Render step content
   const renderStepContent = useMemo(() => {
     const stepComponents = {
-      1: <PersonalDetail formData={formData} onFormDataChange={handleChange} />,
+      1: (
+        <PersonalDetail
+          metadata={metadata}
+          formData={formData}
+          onFormDataChange={handleChange}
+        />
+      ),
       2: (
         <VerificationDetail
           formData={formData}
@@ -114,7 +133,7 @@ export default function RegistrationPage({
       3: <ReviewDetail formData={formData} />,
     }
     return stepComponents[currentStep] || null
-  }, [currentStep, formData, handleChange])
+  }, [currentStep, metadata, formData, handleChange])
 
   const isLastStep = currentStep === REGISTRATION_CONFIG.steps.length
 
@@ -139,6 +158,7 @@ export default function RegistrationPage({
         <Button
           onClick={handlePrev}
           disabled={currentStep === 1}
+          aria-disabled={currentStep === 1}
           variant="outline"
           className="bg-white text-gray-800 transition-colors hover:bg-gray-100 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
         >
@@ -146,6 +166,7 @@ export default function RegistrationPage({
         </Button>
         <Button
           onClick={handleNextOrSubmit}
+          aria-label={isLastStep ? 'Submit form' : 'Next step'}
           className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
         >
           {isLastStep ? 'Submit' : 'Next'}
