@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { StepIndicator } from '@/components/step-indicator'
 import { PersonalDetail } from '@/components/personal-detail'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
-import IdentityVerification from '../../_components/verification'
+import { VerificationDetail } from '@/components/verification-detail'
 import Review from '../../_components/review'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 
@@ -106,7 +106,7 @@ export default function RegistrationPage({
     const stepComponents = {
       1: <PersonalDetail formData={formData} onFormDataChange={handleChange} />,
       2: (
-        <IdentityVerification
+        <VerificationDetail
           formData={formData}
           onFormDataChange={handleChange}
         />
