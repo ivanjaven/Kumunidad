@@ -10,10 +10,16 @@ import IdentityVerification from '../../_components/verification'
 import Review from '../../_components/review'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 
-type StepId = 1 | 2 | 3
+// Define props with step types
+interface RegistrationPageProps {
+  initialStep?: 1 | 2 | 3
+}
 
-const Stepper: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState<StepId>(1)
+export default function RegistrationPage({
+  initialStep = 1,
+}: RegistrationPageProps) {
+  // State for current step and form data
+  const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(initialStep)
   const [formData, setFormData] = useState<RegistrationTypedef>({
     benefits: '',
     day: '',
@@ -35,6 +41,7 @@ const Stepper: React.FC = () => {
     year: '',
   })
 
+  // Handle form data changes
   const handleChange = useCallback(
     (id: keyof RegistrationTypedef, value: string) => {
       setFormData((prev) => ({ ...prev, [id]: value }))
@@ -42,69 +49,79 @@ const Stepper: React.FC = () => {
     [],
   )
 
+  // Validate current step
   const validateStep = useCallback(() => {
     const requiredFields = REGISTRATION_CONFIG.requiredFields[currentStep]
-    for (const field of requiredFields) {
-      if (!formData[field as keyof RegistrationTypedef]) {
-        toast(
-          REGISTRATION_CONFIG.errorMessages[
-            field as keyof typeof REGISTRATION_CONFIG.errorMessages
-          ],
-          {
-            description: new Date().toLocaleString(),
-            action: {
-              label: 'Undo',
-              onClick: () => console.log('Undo'),
-            },
-          },
-        )
-        return false
-      }
+    const emptyField = requiredFields.find(
+      (field) => !formData[field as keyof RegistrationTypedef],
+    )
+
+    if (emptyField) {
+      toast(
+        REGISTRATION_CONFIG.errorMessages[
+          emptyField as keyof typeof REGISTRATION_CONFIG.errorMessages
+        ],
+        {
+          description: new Date().toLocaleString(),
+          action: { label: 'Undo', onClick: () => console.log('Undo') },
+        },
+      )
+      return false
     }
     return true
   }, [formData, currentStep])
 
-  const handleNext = useCallback(() => {
-    if (!validateStep()) return
-    if (currentStep === 1) console.log('Form Data:', formData)
-    setCurrentStep(
-      (prev) => Math.min(prev + 1, REGISTRATION_CONFIG.steps.length) as StepId,
-    )
+  // Handle next step or submit
+  const handleNextOrSubmit = useCallback(() => {
+    if (validateStep()) {
+      if (currentStep === REGISTRATION_CONFIG.steps.length) {
+        // This is the submit action
+        console.log('Form Data:', formData)
+        // Here you would typically send the data to your backend
+      } else {
+        setCurrentStep((prev) => {
+          const nextStep = (prev + 1) as 1 | 2 | 3
+          return nextStep <= REGISTRATION_CONFIG.steps.length ? nextStep : prev
+        })
+      }
+    }
   }, [currentStep, validateStep, formData])
 
+  // Handle previous step
   const handlePrev = useCallback(() => {
-    setCurrentStep((prev) => Math.max(prev - 1, 1) as StepId)
+    setCurrentStep((prev) => {
+      const prevStep = (prev - 1) as 1 | 2 | 3
+      return prevStep >= 1 ? prevStep : prev
+    })
   }, [])
 
+  // Get current step details
   const currentStepDetails = useMemo(
     () => REGISTRATION_CONFIG.steps[currentStep - 1],
     [currentStep],
   )
 
+  // Render step content
   const renderStepContent = useMemo(() => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <PersonalDetail formData={formData} onFormDataChange={handleChange} />
-        )
-      case 2:
-        return (
-          <IdentityVerification
-            formData={formData}
-            onFormDataChange={handleChange}
-          />
-        )
-      case 3:
-        return <Review formData={formData} />
-      default:
-        return null
+    const stepComponents = {
+      1: <PersonalDetail formData={formData} onFormDataChange={handleChange} />,
+      2: (
+        <IdentityVerification
+          formData={formData}
+          onFormDataChange={handleChange}
+        />
+      ),
+      3: <Review formData={formData} />,
     }
+    return stepComponents[currentStep] || null
   }, [currentStep, formData, handleChange])
 
+  const isLastStep = currentStep === REGISTRATION_CONFIG.steps.length
+
   return (
-    <div className="w-full md:p-8">
-      <div className="mb-16">
-        <div className="space-y-4 text-center">
+    <main className="w-full md:p-8">
+      <section className="mb-16">
+        <header className="space-y-4 text-center">
           <h1 className="font-bold text-black sm:text-5xl">
             {currentStepDetails.title}
           </h1>
@@ -115,10 +132,10 @@ const Stepper: React.FC = () => {
             steps={REGISTRATION_CONFIG.steps}
             currentStep={currentStep}
           />
-        </div>
-        <div>{renderStepContent}</div>
-      </div>
-      <div className="flex w-full items-center justify-center gap-4">
+        </header>
+        <article>{renderStepContent}</article>
+      </section>
+      <nav className="flex w-full items-center justify-center gap-4">
         <Button
           onClick={handlePrev}
           disabled={currentStep === 1}
@@ -128,15 +145,12 @@ const Stepper: React.FC = () => {
           Previous
         </Button>
         <Button
-          onClick={handleNext}
-          disabled={currentStep === REGISTRATION_CONFIG.steps.length}
+          onClick={handleNextOrSubmit}
           className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
         >
-          {currentStep === REGISTRATION_CONFIG.steps.length ? 'Submit' : 'Next'}
+          {isLastStep ? 'Submit' : 'Next'}
         </Button>
-      </div>
-    </div>
+      </nav>
+    </main>
   )
 }
-
-export default Stepper
