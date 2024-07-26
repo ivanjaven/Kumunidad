@@ -92,6 +92,11 @@ export default function RegistrationPage() {
     return true
   }, [formData, currentStep])
 
+  const handleSubmitSuccess = useCallback(() => {
+    setIsSuccessful(true)
+    toast.success('Registration submitted successfully!')
+  }, [])
+
   const handleNextOrSubmit = useCallback(async () => {
     if (validateStep()) {
       if (currentStep === REGISTRATION_CONFIG.steps.length) {
@@ -99,8 +104,7 @@ export default function RegistrationPage() {
         try {
           const result = await postRegistration(formData)
           console.log('Registration successful:', result)
-          toast.success('Registration submitted successfully!')
-          setIsSuccessful(true)
+          handleSubmitSuccess()
         } catch (error) {
           console.error('Registration failed:', error)
           toast.error('Registration failed. Please try again.')
@@ -114,7 +118,7 @@ export default function RegistrationPage() {
         })
       }
     }
-  }, [currentStep, validateStep, formData])
+  }, [currentStep, validateStep, formData, handleSubmitSuccess])
 
   const handlePrev = useCallback(() => {
     setCurrentStep((prev) => {
@@ -150,38 +154,57 @@ export default function RegistrationPage() {
 
   const isLastStep = currentStep === REGISTRATION_CONFIG.steps.length
 
-  return (
-    <main className="w-full md:p-8">
-      {isSuccessful && <Confetti recycle={false} />}
-      <section className="mb-16">
-        <header className="space-y-4 text-center">
-          <h1 className="font-bold text-black sm:text-5xl">
-            {isSuccessful ? 'Congratulations' : currentStepDetails.title}
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300">
-            {isSuccessful
-              ? 'Thank you for registration.'
-              : currentStepDetails.subtitle}
-          </p>
-          {!isSuccessful && (
-            <StepIndicator
-              steps={REGISTRATION_CONFIG.steps}
-              currentStep={currentStep}
-            />
-          )}
-        </header>
-        <article>{renderStepContent}</article>
-      </section>
-      <nav className="flex w-full items-center justify-center gap-4">
-        {isSuccessful ? (
+  const renderSuccessView = () => (
+    <>
+      <Confetti recycle={false} />
+      <div className="mt-16">
+        <section className="mb-8">
+          <header className="space-y-4 text-center">
+            <h1 className="font-bold text-black sm:text-5xl">
+              Congratulations 🎉
+            </h1>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Thank you for registration.
+            </p>
+          </header>
+          <article>
+            <ReviewDetail metadata={metadata} formData={formData} />
+          </article>
+        </section>
+        <nav className="flex w-full items-center justify-center gap-4">
           <Button
             onClick={() => router.push('/home')}
             className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
           >
             Go Home
           </Button>
-        ) : (
-          <>
+        </nav>
+      </div>
+    </>
+  )
+
+  return (
+    <main className="w-full md:p-8">
+      {isSuccessful ? (
+        renderSuccessView()
+      ) : (
+        <>
+          <section className="mb-16">
+            <header className="space-y-4 text-center">
+              <h1 className="font-bold text-black sm:text-5xl">
+                {currentStepDetails.title}
+              </h1>
+              <p className="text-lg text-gray-700 dark:text-gray-300">
+                {currentStepDetails.subtitle}
+              </p>
+              <StepIndicator
+                steps={REGISTRATION_CONFIG.steps}
+                currentStep={currentStep}
+              />
+            </header>
+            <article>{renderStepContent}</article>
+          </section>
+          <nav className="flex w-full items-center justify-center gap-4">
             <Button
               onClick={handlePrev}
               disabled={currentStep === 1}
@@ -200,9 +223,9 @@ export default function RegistrationPage() {
             >
               {isSubmitting ? 'Submitting...' : isLastStep ? 'Submit' : 'Next'}
             </Button>
-          </>
-        )}
-      </nav>
+          </nav>
+        </>
+      )}
     </main>
   )
 }

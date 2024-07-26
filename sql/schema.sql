@@ -65,7 +65,6 @@ CREATE TABLE IF NOT EXISTS house_numbers (
     house_number_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     house_number VARCHAR(20) NOT NULL COMMENT 'House number',
     street_id INT UNSIGNED NOT NULL COMMENT 'ID of the associated street',
-    UNIQUE KEY uk_house_number_street (house_number, street_id),
     FOREIGN KEY fk_house_number_street (street_id) REFERENCES streets(street_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
