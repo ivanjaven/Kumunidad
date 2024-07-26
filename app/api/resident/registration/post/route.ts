@@ -21,12 +21,12 @@ export async function POST(request: NextRequest) {
     const civil_status = body.civil_status
     const barangay_status = body.barangay_status
     const address_id = body.address_id
-    const contact_id = body.contact_id
+    const email = body.email
+    const phone = body.phone
     const occupation_id = body.occupation_id
     const nationality_id = body.nationality_id
     const religion_id = body.religion_id
     const benefit_id = body.benefit_id
-    const is_archived = body.is_archived
 
     if (
       !full_name ||
@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
       !civil_status ||
       !barangay_status ||
       !address_id ||
-      !contact_id ||
+      !email ||
+      !phone ||
       !occupation_id ||
       !nationality_id ||
       !religion_id ||
@@ -47,9 +48,17 @@ export async function POST(request: NextRequest) {
       return APIResponse({ error: 'All parameters needed are required' }, 400)
     }
 
+    // Insert contact information and get contact_id
+    const contactResult = await Query({
+      query: 'INSERT INTO contacts (email, mobile) VALUES (?, ?)',
+      values: [email, phone],
+    })
+
+    const contact_id = contactResult.insertId
+
     const residents = await Query({
       query:
-        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ',
+        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       values: [
         full_name,
         first_name,
@@ -70,11 +79,14 @@ export async function POST(request: NextRequest) {
       ],
     })
 
-    if (residents.length === 0) {
-      return APIResponse({ error: 'Resident not found' }, 404)
+    if (residents.affectedRows === 0) {
+      return APIResponse({ error: 'Failed to insert resident' }, 500)
     }
 
-    return APIResponse(residents, 200)
+    return APIResponse(
+      { message: 'Resident inserted successfully', id: residents.insertId },
+      201,
+    )
   } catch (error: any) {
     console.error('Database query failed:', error)
 

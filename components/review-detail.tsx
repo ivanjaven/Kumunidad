@@ -13,6 +13,7 @@ import {
   Camera,
 } from 'lucide-react'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
+import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
 
 type InfoItem = {
   icon: React.ComponentType<{ className?: string }>
@@ -29,26 +30,73 @@ const InfoItemComponent: React.FC<{ item: InfoItem }> = ({ item }) => (
     </div>
   </div>
 )
-export function ReviewDetail({ formData }: { formData: RegistrationTypedef }) {
+
+type ReviewDetailProps = {
+  formData: RegistrationTypedef
+  metadata: MetadataTypedef
+}
+
+const formatDate = (day: string, month: string, year: string) => {
+  const date = new Date(`${year}-${month}-${day}`)
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+export function ReviewDetail({ formData, metadata }: ReviewDetailProps) {
+  const getValueFromMetadata = (key: keyof MetadataTypedef, id: number) => {
+    const item = (metadata[key] as any[])?.find((item) => item.id === id)
+    return item ? item.type || item.name : ''
+  }
+
   const infoItems: InfoItem[] = [
     {
       icon: Calendar,
       label: 'Date of Birth',
-      value: `${formData.day}/${formData.month}/${formData.year}`,
+      value: formatDate(formData.day, formData.month, formData.year),
     },
     { icon: User, label: 'Gender', value: formData.gender },
     { icon: Heart, label: 'Marital Status', value: formData.status },
     {
       icon: Home,
       label: 'Address',
-      value: `${formData.street} ${formData.houseNumber}`,
+      value: `${getValueFromMetadata('street', parseInt(formData.street))} ${formData.houseNumber}`,
     },
-    { icon: Phone, label: 'Phone', value: formData.phone },
-    { icon: Mail, label: 'Email', value: formData.email },
-    { icon: Briefcase, label: 'Occupation', value: formData.occupation },
-    { icon: Flag, label: 'Nationality', value: formData.nationality },
-    { icon: Star, label: 'Religion', value: formData.religion },
-    { icon: Star, label: 'Benefits', value: formData.benefits },
+    {
+      icon: Phone,
+      label: 'Phone',
+      value: formData.phone || 'N/A',
+    },
+    {
+      icon: Mail,
+      label: 'Email',
+      value: formData.email || 'N/A',
+    },
+    {
+      icon: Briefcase,
+      label: 'Occupation',
+      value: getValueFromMetadata('occupation', parseInt(formData.occupation)),
+    },
+    {
+      icon: Flag,
+      label: 'Nationality',
+      value: getValueFromMetadata(
+        'nationality',
+        parseInt(formData.nationality),
+      ),
+    },
+    {
+      icon: Star,
+      label: 'Religion',
+      value: getValueFromMetadata('religion', parseInt(formData.religion)),
+    },
+    {
+      icon: Star,
+      label: 'Benefits',
+      value: getValueFromMetadata('benefits', parseInt(formData.benefits)),
+    },
   ]
 
   return (

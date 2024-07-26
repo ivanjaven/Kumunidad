@@ -12,13 +12,8 @@ import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
 import { fetchMetadata } from '@/server/queries/metadata'
 import { toast } from 'sonner'
 
-interface RegistrationPageProps {
-  initialStep?: 1 | 2 | 3
-}
-
-export default function RegistrationPage({
-  initialStep = 1,
-}: RegistrationPageProps) {
+export default function RegistrationPage() {
+  const initialStep: 1 | 2 | 3 = 1 // Set default value here
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(initialStep)
   const [formData, setFormData] = useState<RegistrationTypedef>({
     benefits: '',
@@ -130,7 +125,7 @@ export default function RegistrationPage({
           onFormDataChange={handleChange}
         />
       ),
-      3: <ReviewDetail formData={formData} />,
+      3: <ReviewDetail metadata={metadata} formData={formData} />,
     }
     return stepComponents[currentStep] || null
   }, [currentStep, metadata, formData, handleChange])

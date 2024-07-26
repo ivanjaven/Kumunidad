@@ -1,5 +1,20 @@
 import fs from 'fs'
 import path from 'path'
+
+import { labels, priorities, statuses } from './data'
+
+fs.writeFileSync(
+  path.join(__dirname, 'tasks.json'),
+  JSON.stringify(null, null, 2),
+)
+
+console.log('✅ Tasks data generated.')
+
+/**
+ * 
+ * 
+ * import fs from 'fs'
+import path from 'path'
 import { faker } from '@faker-js/faker'
 
 import { labels, priorities, statuses } from './data'
@@ -18,3 +33,7 @@ fs.writeFileSync(
 )
 
 console.log('✅ Tasks data generated.')
+
+ * 
+ * 
+ */
