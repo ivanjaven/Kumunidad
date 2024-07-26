@@ -10,43 +10,79 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
-    const full_name = body.full_name
-    const first_name = body.first_name
-    const last_name = body.last_name
-    const middle_name = body.middle_name
-    const gender = body.gender
-    const image_base64 = body.image_base64
-    const fingerprint_base64 = body.fingerprint_base64
-    const date_of_birth = body.date_of_birth
-    const civil_status = body.civil_status
-    const barangay_status = body.barangay_status
-    const address_id = body.address_id
-    const email = body.email
-    const phone = body.phone
-    const occupation_id = body.occupation_id
-    const nationality_id = body.nationality_id
-    const religion_id = body.religion_id
-    const benefit_id = body.benefit_id
-
+    const {
+      full_name,
+      first_name,
+      last_name,
+      middle_name,
+      gender,
+      image_base64,
+      fingerprint_base64,
+      date_of_birth,
+      civil_status,
+      barangay_status,
+      house_number,
+      street_id,
+      barangay_id,
+      municipality_id,
+      province_id,
+      postal_code,
+      email,
+      phone,
+      occupation_id,
+      nationality_id,
+      religion_id,
+      benefit_id,
+    } = body
     if (
       !full_name ||
       !first_name ||
       !last_name ||
-      !middle_name ||
       !gender ||
       !date_of_birth ||
       !civil_status ||
       !barangay_status ||
-      !address_id ||
-      !email ||
-      !phone ||
+      !house_number ||
+      !street_id ||
+      !barangay_id ||
+      !municipality_id ||
+      !province_id ||
+      !postal_code ||
       !occupation_id ||
       !nationality_id ||
       !religion_id ||
       !benefit_id
     ) {
-      return APIResponse({ error: 'All parameters needed are required' }, 400)
+      return APIResponse({ error: 'All required parameters are needed' }, 400)
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Insert house number and get house_number_id
+    const houseNumberResult = await Query({
+      query:
+        'INSERT INTO house_numbers (house_number, street_id) VALUES (?, ?)',
+      values: [house_number, street_id],
+    })
+
+    const house_number_id = houseNumberResult.insertId
+
+    const addressResult = await Query({
+      query:
+        'INSERT INTO addresses (house_number_id, street_id, barangay_id, municipality_id, province_id, postal_code) VALUES (?, ?, ?, ?, ?, ?)',
+      values: [
+        house_number_id,
+        street_id,
+        barangay_id,
+        municipality_id,
+        province_id,
+        postal_code,
+      ],
+    })
+
+    const address_id = addressResult.insertId
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Insert contact information and get contact_id
     const contactResult = await Query({
@@ -55,6 +91,8 @@ export async function POST(request: NextRequest) {
     })
 
     const contact_id = contactResult.insertId
+
+    /////////////////////////////
 
     const residents = await Query({
       query:

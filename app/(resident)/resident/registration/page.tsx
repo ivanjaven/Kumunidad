@@ -9,8 +9,9 @@ import { VerificationDetail } from '@/components/verification-detail'
 import { ReviewDetail } from '@/components/review-detail'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
-import { fetchMetadata } from '@/server/queries/metadata'
+import { fetchMetadata } from '@/server/queries/fetch-metadata'
 import { toast } from 'sonner'
+import { postRegistration } from '@/server/actions/post-resident'
 
 export default function RegistrationPage() {
   const initialStep: 1 | 2 | 3 = 1 // Set default value here
@@ -43,6 +44,8 @@ export default function RegistrationPage() {
     nationality: [],
     religion: [],
   })
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     async function fetchOptions() {
@@ -85,10 +88,21 @@ export default function RegistrationPage() {
     return true
   }, [formData, currentStep])
 
-  const handleNextOrSubmit = useCallback(() => {
+  const handleNextOrSubmit = useCallback(async () => {
     if (validateStep()) {
       if (currentStep === REGISTRATION_CONFIG.steps.length) {
-        console.log('Form Data:', formData)
+        setIsSubmitting(true)
+        try {
+          const result = await postRegistration(formData)
+          console.log('Registration successful:', result)
+          toast.success('Registration submitted successfully!')
+          // Reset form or redirect user here
+        } catch (error) {
+          console.error('Registration failed:', error)
+          toast.error('Registration failed. Please try again.')
+        } finally {
+          setIsSubmitting(false)
+        }
       } else {
         setCurrentStep((prev) => {
           const nextStep = (prev + 1) as 1 | 2 | 3
@@ -161,10 +175,12 @@ export default function RegistrationPage() {
         </Button>
         <Button
           onClick={handleNextOrSubmit}
+          disabled={isSubmitting}
+          aria-disabled={isSubmitting}
           aria-label={isLastStep ? 'Submit form' : 'Next step'}
           className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
         >
-          {isLastStep ? 'Submit' : 'Next'}
+          {isSubmitting ? 'Submitting...' : isLastStep ? 'Submit' : 'Next'}
         </Button>
       </nav>
     </main>
