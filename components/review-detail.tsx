@@ -120,7 +120,7 @@ export function ReviewDetail({ formData, metadata }: ReviewDetailProps) {
                 </div>
               )}
             </div>
-            <h3 className="text-center text-2xl font-bold text-gray-900">{`${formData.surname} ${formData.name} ${formData.middleName}`}</h3>
+            <h3 className="text-center text-2xl font-bold text-gray-900">{`${formData.surname} ${formData.name} ${formData.middlename}`}</h3>
           </div>
         </div>
         <div className="mt-3 md:col-span-2">

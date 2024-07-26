@@ -8,10 +8,10 @@ export async function postRegistration(
 
   try {
     const requestBody = {
-      full_name: `${data.name} ${data.middleName} ${data.surname}`,
+      full_name: `${data.name} ${data.middlename} ${data.surname}`,
       first_name: data.name,
       last_name: data.surname,
-      middle_name: data.middleName || 'N/A',
+      middle_name: data.middlename || 'N/A',
       gender: data.gender,
       image_base64: data.image_base64,
       fingerprint_base64: 'base64encodedfingerprint',

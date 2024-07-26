@@ -27,7 +27,7 @@ export default function RegistrationPage() {
     gender: '',
     houseNumber: '',
     image_base64: '',
-    middleName: '',
+    middlename: '',
     month: '',
     name: '',
     nationality: '',

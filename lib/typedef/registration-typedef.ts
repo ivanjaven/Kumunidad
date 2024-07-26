@@ -6,7 +6,7 @@ export interface RegistrationTypedef {
   gender: string
   houseNumber: string
   image_base64: string
-  middleName: string
+  middlename: string
   month: string
   name: string
   nationality: string

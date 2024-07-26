@@ -24,7 +24,7 @@ export function PersonalDetail({
     <section className="mt-8 space-y-8">
       {/* Name fields */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-8">
-        {['surname', 'name', 'middleName'].map((field) => (
+        {['surname', 'name', 'middlename'].map((field) => (
           <CustomFormField key={field} label={capitalize(field)}>
             <CustomInputField
               id={field as keyof RegistrationTypedef}
