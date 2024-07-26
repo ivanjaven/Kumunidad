@@ -100,7 +100,7 @@ export function ReviewDetail({ formData, metadata }: ReviewDetailProps) {
   ]
 
   return (
-    <div className="container mx-auto mb-16 mt-24 max-w-6xl px-4">
+    <div className="container mx-auto mb-16 max-w-6xl px-4">
       <div className="grid gap-12 md:grid-cols-3">
         <div className="flex flex-col items-center justify-center md:col-span-1">
           <div className="flex h-full flex-col items-center justify-center">

@@ -147,7 +147,11 @@ export default function RegistrationPage() {
           onFormDataChange={handleChange}
         />
       ),
-      3: <ReviewDetail metadata={metadata} formData={formData} />,
+      3: (
+        <div className="mt-24">
+          <ReviewDetail metadata={metadata} formData={formData} />
+        </div>
+      ),
     }
     return stepComponents[currentStep] || null
   }, [currentStep, metadata, formData, handleChange])
@@ -158,18 +162,18 @@ export default function RegistrationPage() {
     <>
       <Confetti recycle={false} />
       <div className="mt-16">
-        <section className="mb-8">
+        <section className="mb-24">
           <header className="space-y-4 text-center">
             <h1 className="font-bold text-black sm:text-5xl">
-              Congratulations 🎉
+              {REGISTRATION_CONFIG.successMessages.title}
             </h1>
             <p className="text-lg text-gray-700 dark:text-gray-300">
-              Thank you for registration.
+              {REGISTRATION_CONFIG.successMessages.subtitle}
             </p>
           </header>
-          <article>
+          <div className="mt-16">
             <ReviewDetail metadata={metadata} formData={formData} />
-          </article>
+          </div>
         </section>
         <nav className="flex w-full items-center justify-center gap-4">
           <Button

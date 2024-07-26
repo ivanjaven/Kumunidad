@@ -4,7 +4,7 @@ export async function postRegistration(
   data: RegistrationTypedef,
 ): Promise<any> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-  const endpoint = '/api/resident/registration/post'
+  const endpoint = '/api/resident/registration'
 
   try {
     const requestBody = {
