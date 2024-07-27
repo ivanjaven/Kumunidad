@@ -4,7 +4,7 @@ import { APIErrHandler } from '@/lib/api-err-handler'
 import { APILogger } from '@/lib/api-req-logger'
 import { Query } from '@/lib/db-con-helper'
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
   try {
     // Log the incoming request and parameters
     APILogger(request, null)
@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
 
     // Extract resident data from request body
     const {
+      resident_id,
       full_name,
       first_name,
       last_name,
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (
+      !resident_id ||
       !full_name ||
       !first_name ||
       !last_name ||
@@ -65,10 +67,10 @@ export async function POST(request: NextRequest) {
       return APIResponse({ error: 'All required parameters are needed' }, 400)
     }
 
-    // Insert resident information
-    const residentResult = await Query({
+    // Update resident information
+    await Query({
       query:
-        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'UPDATE residents SET full_name = ?, first_name = ?, last_name = ?, middle_name = ?, gender = ?, image_base64 = ?, fingerprint_base64 = ?, date_of_birth = ?, civil_status = ?, barangay_status = ?, occupation_id = ?, nationality_id = ?, religion_id = ?, benefit_id = ? WHERE resident_id = ?',
       values: [
         full_name,
         first_name,
@@ -84,40 +86,37 @@ export async function POST(request: NextRequest) {
         nationality_id,
         religion_id,
         benefit_id,
+        resident_id,
       ],
     })
 
-    // Extract resident ID from the inserted
-    const residentId = residentResult.insertId
-
-    // Insert address information
+    // Update address information
     await Query({
       query:
-        'INSERT INTO addresses (resident_id, house_number, street_id, barangay_id, municipality_id, province_id, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        'UPDATE addresses SET house_number = ?, street_id = ?, barangay_id = ?, municipality_id = ?, province_id = ?, postal_code = ? WHERE resident_id = ?',
       values: [
-        residentId,
         house_number,
         street_id,
         barangay_id,
         municipality_id,
         province_id,
         postal_code,
+        resident_id,
       ],
     })
 
-    // Insert contact information
+    // Update contact information
     await Query({
-      query:
-        'INSERT INTO contacts (resident_id, email, mobile) VALUES (?, ?, ?)',
-      values: [residentId, email, mobile],
+      query: 'UPDATE contacts SET email = ?, mobile = ? WHERE resident_id = ?',
+      values: [email, mobile, resident_id],
     })
 
     return APIResponse(
       {
-        message: 'Resident, address, and contact inserted successfully',
-        id: residentId,
+        message: 'Resident, address, and contact updated successfully',
+        id: resident_id,
       },
-      201,
+      200,
     )
   } catch (error: any) {
     console.error('Database query failed:', error)
