@@ -23,7 +23,7 @@ export async function insertResident(data: RegistrationTypedef): Promise<any> {
       province_id: '1',
       postal_code: '3017',
       email: data.email || 'N/A',
-      phone: data.phone || 'N/A',
+      mobile: data.mobile || 'N/A',
       occupation_id: data.occupation,
       nationality_id: data.nationality,
       religion_id: data.religion,

@@ -10,6 +10,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Extract resident data from request body
     const {
       full_name,
       first_name,
@@ -28,12 +29,14 @@ export async function POST(request: NextRequest) {
       province_id,
       postal_code,
       email,
-      phone,
+      mobile,
       occupation_id,
       nationality_id,
       religion_id,
       benefit_id,
     } = body
+
+    // Validate required fields
     if (
       !full_name ||
       !first_name ||
@@ -56,47 +59,10 @@ export async function POST(request: NextRequest) {
       return APIResponse({ error: 'All required parameters are needed' }, 400)
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Insert house number and get house_number_id
-    const houseNumberResult = await Query({
+    // Insert resident information
+    const residentResult = await Query({
       query:
-        'INSERT INTO house_numbers (house_number, street_id) VALUES (?, ?)',
-      values: [house_number, street_id],
-    })
-
-    const house_number_id = houseNumberResult.insertId
-
-    const addressResult = await Query({
-      query:
-        'INSERT INTO addresses (house_number_id, street_id, barangay_id, municipality_id, province_id, postal_code) VALUES (?, ?, ?, ?, ?, ?)',
-      values: [
-        house_number_id,
-        street_id,
-        barangay_id,
-        municipality_id,
-        province_id,
-        postal_code,
-      ],
-    })
-
-    const address_id = addressResult.insertId
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Insert contact information and get contact_id
-    const contactResult = await Query({
-      query: 'INSERT INTO contacts (email, mobile) VALUES (?, ?)',
-      values: [email, phone],
-    })
-
-    const contact_id = contactResult.insertId
-
-    /////////////////////////////
-
-    const residents = await Query({
-      query:
-        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       values: [
         full_name,
         first_name,
@@ -108,8 +74,6 @@ export async function POST(request: NextRequest) {
         date_of_birth,
         civil_status,
         barangay_status,
-        address_id,
-        contact_id,
         occupation_id,
         nationality_id,
         religion_id,
@@ -117,12 +81,36 @@ export async function POST(request: NextRequest) {
       ],
     })
 
-    if (residents.affectedRows === 0) {
-      return APIResponse({ error: 'Failed to insert resident' }, 500)
-    }
+    // Extract resident ID from the inserted
+    const residentId = residentResult.insertId
+
+    // Insert address information
+    await Query({
+      query:
+        'INSERT INTO addresses (resident_id, house_number, street_id, barangay_id, municipality_id, province_id, postal_code) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      values: [
+        residentId,
+        house_number,
+        street_id,
+        barangay_id,
+        municipality_id,
+        province_id,
+        postal_code,
+      ],
+    })
+
+    // Insert contact information
+    await Query({
+      query:
+        'INSERT INTO contacts (resident_id, email, mobile) VALUES (?, ?, ?)',
+      values: [residentId, email, mobile],
+    })
 
     return APIResponse(
-      { message: 'Resident inserted successfully', id: residents.insertId },
+      {
+        message: 'Resident, address, and contact inserted successfully',
+        id: residentId,
+      },
       201,
     )
   } catch (error: any) {

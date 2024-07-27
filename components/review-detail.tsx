@@ -66,8 +66,8 @@ export function ReviewDetail({ formData, metadata }: ReviewDetailProps) {
     },
     {
       icon: Phone,
-      label: 'Phone',
-      value: formData.phone || 'N/A',
+      label: 'Mobile',
+      value: formData.mobile || 'N/A',
     },
     {
       icon: Mail,

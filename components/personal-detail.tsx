@@ -112,7 +112,7 @@ export function PersonalDetail({
 
       {/* Contact fields */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-8">
-        {['email', 'phone'].map((field) => (
+        {['email', 'mobile'].map((field) => (
           <CustomFormField key={field} label={capitalize(field)}>
             <CustomInputField
               id={field as keyof RegistrationTypedef}

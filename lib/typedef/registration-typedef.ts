@@ -7,11 +7,11 @@ export interface RegistrationTypedef {
   houseNumber: string
   image_base64: string
   middlename: string
+  mobile: string
   month: string
   name: string
   nationality: string
   occupation: string
-  phone: string
   religion: string
   status: string
   street: string
