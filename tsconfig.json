@@ -22,7 +22,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts",
-  "app/api/residents/put/[id]/route.ts"
+  "app/api/resident/edit/[id]/route.ts"
 
 ],
   "exclude": ["node_modules"]

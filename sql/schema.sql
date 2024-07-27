@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS streets (
 -- Table structure for house numbers
 -- =============================================
 CREATE TABLE IF NOT EXISTS house_numbers (
-    house_number_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    house_number_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     house_number VARCHAR(20) NOT NULL COMMENT 'House number',
     street_id INT UNSIGNED NOT NULL COMMENT 'ID of the associated street',
     FOREIGN KEY fk_house_number_street (street_id) REFERENCES streets(street_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS house_numbers (
 -- =============================================
 CREATE TABLE IF NOT EXISTS addresses (
     address_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    house_number_id INT UNSIGNED COMMENT 'ID of the house number',
+    house_number_id BIGINT UNSIGNED COMMENT 'ID of the house number',
     street_id INT UNSIGNED COMMENT 'ID of the street',
     barangay_id INT UNSIGNED COMMENT 'ID of the barangay',
     municipality_id INT UNSIGNED COMMENT 'ID of the municipality',
@@ -264,19 +264,19 @@ VALUES ('example@example.com', '1234567890');
 
 -- Insert into occupations
 INSERT INTO occupations (occupation_name)
-VALUES ('Engineer');
+VALUES ('N/A'), ('Engineer');
 
 -- Insert into nationalities
 INSERT INTO nationalities (nationality_name)
-VALUES ('Filipino');
+VALUES ('N/A'), ('Filipino');
 
 -- Insert into religions
 INSERT INTO religions (religion_name)
-VALUES ('Catholic');
+VALUES ('N/A'), ('Catholic');
 
 -- Insert into benefits
 INSERT INTO benefits (benefit_name)
-VALUES ('Health Insurance');
+VALUES ('N/A'), ('Health Insurance');
 
 -- Insert into residents
 INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, address_id, contact_id, occupation_id, nationality_id, religion_id, benefit_id, is_archived)
