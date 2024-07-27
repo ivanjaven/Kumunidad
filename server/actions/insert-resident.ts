@@ -1,8 +1,6 @@
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 
-export async function postRegistration(
-  data: RegistrationTypedef,
-): Promise<any> {
+export async function insertResident(data: RegistrationTypedef): Promise<any> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL
   const endpoint = '/api/resident/registration'
 

@@ -5,56 +5,58 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { StepIndicator } from '@/components/step-indicator'
 import { PersonalDetail } from '@/components/personal-detail'
-import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { VerificationDetail } from '@/components/verification-detail'
-import { ReviewDetail } from '@/components/review-detail'
+import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
+import { ReviewDetail } from '@/components/review-detail'
 import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
 import { fetchMetadata } from '@/server/queries/fetch-metadata'
+import { insertResident } from '@/server/actions/insert-resident'
 import { toast } from 'sonner'
-import { postRegistration } from '@/server/actions/insert-resident'
 import Confetti from 'react-confetti'
+
+const initialFormData: RegistrationTypedef = {
+  benefits: '',
+  day: '',
+  email: '',
+  fingerprint_base64: '',
+  gender: '',
+  houseNumber: '',
+  image_base64: '',
+  middlename: '',
+  month: '',
+  name: '',
+  nationality: '',
+  occupation: '',
+  phone: '',
+  religion: '',
+  status: '',
+  street: '',
+  surname: '',
+  year: '',
+}
+
+const initialMetadata: MetadataTypedef = {
+  benefits: [],
+  occupation: [],
+  street: [],
+  nationality: [],
+  religion: [],
+}
 
 export default function RegistrationPage() {
   const router = useRouter()
   const initialStep: 1 | 2 | 3 = 1
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(initialStep)
-  const [formData, setFormData] = useState<RegistrationTypedef>({
-    benefits: '',
-    day: '',
-    email: '',
-    fingerprint_base64: '',
-    gender: '',
-    houseNumber: '',
-    image_base64: '',
-    middlename: '',
-    month: '',
-    name: '',
-    nationality: '',
-    occupation: '',
-    phone: '',
-    religion: '',
-    status: '',
-    street: '',
-    surname: '',
-    year: '',
-  })
-
-  const [metadata, setMetadata] = useState<MetadataTypedef>({
-    benefits: [],
-    occupation: [],
-    street: [],
-    nationality: [],
-    religion: [],
-  })
-
+  const [formData, setFormData] = useState<RegistrationTypedef>(initialFormData)
+  const [metadata, setMetadata] = useState<MetadataTypedef>(initialMetadata)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccessful, setIsSuccessful] = useState(false)
 
   useEffect(() => {
-    async function fetchOptions() {
+    const fetchOptions = async () => {
       try {
-        const data: MetadataTypedef = await fetchMetadata()
+        const data = await fetchMetadata()
         setMetadata(data)
       } catch (error) {
         toast.error('Error fetching dropdown options. Please try again later.')
@@ -78,7 +80,7 @@ export default function RegistrationPage() {
     )
 
     if (emptyField) {
-      toast(
+      toast.error(
         REGISTRATION_CONFIG.errorMessages[
           emptyField as keyof typeof REGISTRATION_CONFIG.errorMessages
         ],
@@ -102,8 +104,7 @@ export default function RegistrationPage() {
       if (currentStep === REGISTRATION_CONFIG.steps.length) {
         setIsSubmitting(true)
         try {
-          const result = await postRegistration(formData)
-          console.log('Registration successful:', result)
+          await insertResident(formData)
           handleSubmitSuccess()
         } catch (error) {
           console.error('Registration failed:', error)
@@ -112,19 +113,13 @@ export default function RegistrationPage() {
           setIsSubmitting(false)
         }
       } else {
-        setCurrentStep((prev) => {
-          const nextStep = (prev + 1) as 1 | 2 | 3
-          return nextStep <= REGISTRATION_CONFIG.steps.length ? nextStep : prev
-        })
+        setCurrentStep((prev) => (prev + 1) as 1 | 2 | 3)
       }
     }
   }, [currentStep, validateStep, formData, handleSubmitSuccess])
 
   const handlePrev = useCallback(() => {
-    setCurrentStep((prev) => {
-      const prevStep = (prev - 1) as 1 | 2 | 3
-      return prevStep >= 1 ? prevStep : prev
-    })
+    setCurrentStep((prev) => (prev > 1 ? ((prev - 1) as 1 | 2 | 3) : prev))
   }, [])
 
   const currentStepDetails = useMemo(
@@ -158,33 +153,36 @@ export default function RegistrationPage() {
 
   const isLastStep = currentStep === REGISTRATION_CONFIG.steps.length
 
-  const renderSuccessView = () => (
-    <>
-      <Confetti recycle={false} />
-      <div className="mt-16">
-        <section className="mb-24">
-          <header className="space-y-4 text-center">
-            <h1 className="font-bold text-black sm:text-5xl">
-              {REGISTRATION_CONFIG.successMessages.title}
-            </h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-              {REGISTRATION_CONFIG.successMessages.subtitle}
-            </p>
-          </header>
-          <div className="mt-16">
-            <ReviewDetail metadata={metadata} formData={formData} />
-          </div>
-        </section>
-        <nav className="flex w-full items-center justify-center gap-4">
-          <Button
-            onClick={() => router.push('/home')}
-            className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
-          >
-            Go Home
-          </Button>
-        </nav>
-      </div>
-    </>
+  const renderSuccessView = useCallback(
+    () => (
+      <>
+        <Confetti recycle={false} />
+        <div className="mt-16">
+          <section className="mb-24">
+            <header className="space-y-4 text-center">
+              <h1 className="font-bold text-black sm:text-5xl">
+                {REGISTRATION_CONFIG.successMessages.title}
+              </h1>
+              <p className="text-lg text-gray-700 dark:text-gray-300">
+                {REGISTRATION_CONFIG.successMessages.subtitle}
+              </p>
+            </header>
+            <div className="mt-16">
+              <ReviewDetail metadata={metadata} formData={formData} />
+            </div>
+          </section>
+          <nav className="flex w-full items-center justify-center gap-4">
+            <Button
+              onClick={() => router.push('/home')}
+              className="hover:bg-primary-700 dark:hover:bg-primary-700 bg-primary text-primary-foreground transition-colors dark:bg-primary dark:text-primary-foreground"
+            >
+              Go Home
+            </Button>
+          </nav>
+        </div>
+      </>
+    ),
+    [metadata, formData, router],
   )
 
   return (
