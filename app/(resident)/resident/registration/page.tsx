@@ -12,7 +12,7 @@ import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
 import { MetadataTypedef } from '@/lib/typedef/metadata-typedef'
 import { fetchMetadata } from '@/server/queries/fetch-metadata'
 import { toast } from 'sonner'
-import { postRegistration } from '@/server/actions/post-resident'
+import { postRegistration } from '@/server/actions/insert-resident'
 import Confetti from 'react-confetti'
 
 export default function RegistrationPage() {

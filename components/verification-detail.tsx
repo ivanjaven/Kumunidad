@@ -40,13 +40,13 @@ export function VerificationDetail({
   const { facialPhoto, fingerprint } = REGISTRATION_CONFIG.verificationDetails
 
   return (
-    <div className="mx-auto mt-8 max-w-6xl space-y-12 p-3 text-black">
+    <div className="mx-auto mt-16 max-w-6xl space-y-12 p-3 text-black">
       <div className="grid gap-12 md:grid-cols-2">
         {/* Facial Photo Section */}
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="mb-1 text-3xl font-bold">{facialPhoto.title}</h2>
-            <p className="text-lg text-gray-800">{facialPhoto.subtitle}</p>
+            <h2 className="text-3xl font-bold">{facialPhoto.title}</h2>
+            <p className="text-base text-gray-800">{facialPhoto.subtitle}</p>
           </div>
           <div className="relative mx-auto flex h-56 w-56 items-center justify-center overflow-hidden rounded-full border-4 border-gray-800 shadow-lg">
             {isCameraOpen ? (
@@ -72,16 +72,14 @@ export function VerificationDetail({
               <CameraIcon className="h-16 w-16 text-gray-700" />
             )}
           </div>
-          <ul className="list-disc pl-6 text-lg text-gray-800">
+          <ul className="list-disc pl-6 text-base text-gray-800">
             {facialPhoto.instructions.map((instruction, index) => (
-              <li key={index} className="mb-1">
-                {instruction}
-              </li>
+              <li key={index}>{instruction}</li>
             ))}
           </ul>
           {isCameraOpen ? (
             <Button
-              className="mb-0 w-full text-lg font-semibold"
+              className="w-full text-lg font-semibold"
               size="lg"
               onClick={handleCapturePhoto}
             >
@@ -90,7 +88,7 @@ export function VerificationDetail({
             </Button>
           ) : (
             <Button
-              className="mb-0 w-full text-lg font-semibold"
+              className="w-full text-lg font-semibold"
               size="lg"
               onClick={handleOpenCamera}
             >
@@ -103,20 +101,18 @@ export function VerificationDetail({
         {/* Fingerprint Section */}
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="mb-1 text-3xl font-bold">{fingerprint.title}</h2>
-            <p className="text-lg text-gray-800">{fingerprint.subtitle}</p>
+            <h2 className="text-3xl font-bold">{fingerprint.title}</h2>
+            <p className="text-base text-gray-800">{fingerprint.subtitle}</p>
           </div>
           <div className="mx-auto flex h-56 w-56 items-center justify-center rounded-full border-4 border-gray-800 shadow-lg">
             <Fingerprint className="h-16 w-16 text-gray-700" />
           </div>
-          <ul className="list-disc pl-6 text-lg text-gray-800">
+          <ul className="list-disc pl-6 text-base text-gray-800">
             {fingerprint.instructions.map((instruction, index) => (
-              <li key={index} className="mb-1">
-                {instruction}
-              </li>
+              <li key={index}>{instruction}</li>
             ))}
           </ul>
-          <Button className="mb-0 w-full text-lg font-semibold" size="lg">
+          <Button className="w-full text-lg font-semibold" size="lg">
             <Fingerprint className="mr-2 h-6 w-6" />
             Capture Fingerprint
           </Button>
