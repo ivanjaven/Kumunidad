@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-import { populationSchema } from '@/data/schema'
+import { PopulationTypedef } from '@/lib/typedef/population-typedef'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -22,7 +22,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const person = populationSchema.parse(row.original)
+  const person = PopulationTypedef.parse(row.original)
 
   return (
     <DropdownMenu>

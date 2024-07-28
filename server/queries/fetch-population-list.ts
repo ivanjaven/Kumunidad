@@ -1,8 +1,17 @@
-import { PopulationTypedef } from '@/lib/typedef/population-typedef'
+interface PopulationTypedef {
+  id: number
+  name: string
+  gender: string
+  age: number
+  age_category: string
+  status: string
+  street: string
+  occupation: string
+}
 
 export async function fetchPopulationList(): Promise<PopulationTypedef[]> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-  const endpoint = '/api/population/list'
+  const endpoint = '/api/population/records'
 
   try {
     const response = await fetch(`${baseUrl}${endpoint}`)
@@ -14,7 +23,7 @@ export async function fetchPopulationList(): Promise<PopulationTypedef[]> {
     const data: PopulationTypedef[] = await response.json()
     return data
   } catch (error) {
-    console.error('Error fetching population list:', error)
+    console.error('Error fetching population records:', error)
     throw error
   }
 }

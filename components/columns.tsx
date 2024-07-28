@@ -1,7 +1,7 @@
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'
-import { Population } from '@/data/schema'
+import { Population } from '@/lib/typedef/population-typedef'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
 import { Badge } from '@/components/ui/badge'
