@@ -4,16 +4,18 @@ import { ColumnDef } from '@tanstack/react-table'
 import { Population } from '@/data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
 import { DataTableRowActions } from './data-table-row-actions'
+import { Badge } from '@/components/ui/badge'
 
 export const columns: ColumnDef<Population>[] = [
   {
-    accessorKey: 'id',
+    accessorKey: 'street',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="ID" />
+      <DataTableColumnHeader column={column} title="Street" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue('id')}</div>,
-    enableSorting: false,
-    enableHiding: false,
+    cell: ({ row }) => <div>{row.getValue('street')}</div>,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id))
+    },
   },
   {
     accessorKey: 'name',
@@ -41,18 +43,16 @@ export const columns: ColumnDef<Population>[] = [
     },
   },
   {
-    accessorKey: 'age',
+    accessorKey: 'age_category',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Age" />
     ),
-    cell: ({ row }) => <div>{row.getValue('age')}</div>,
-  },
-  {
-    accessorKey: 'age_category',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Age Category" />
+    cell: ({ row }) => (
+      <div className="flex items-center space-x-2">
+        <span>{row.original.age}</span>
+        <Badge variant="secondary">{row.getValue('age_category')}</Badge>
+      </div>
     ),
-    cell: ({ row }) => <div>{row.getValue('age_category')}</div>,
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
@@ -66,13 +66,6 @@ export const columns: ColumnDef<Population>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
-  },
-  {
-    accessorKey: 'street',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Street" />
-    ),
-    cell: ({ row }) => <div>{row.getValue('street')}</div>,
   },
   {
     accessorKey: 'occupation',

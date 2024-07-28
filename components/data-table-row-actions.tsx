@@ -36,7 +36,9 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => alert(`ID: ${person.id}`)}>
+          Edit
+        </DropdownMenuItem>
         <DropdownMenuItem>View Details</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>

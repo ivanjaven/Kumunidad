@@ -12,17 +12,36 @@ import { DataTableFacetedFilter } from './data-table-faceted-filter'
 const genderOptions = [
   { label: 'Male', value: 'Male' },
   { label: 'Female', value: 'Female' },
+  { label: 'Other', value: 'Other' },
 ]
 
 const ageCategoryOptions = [
   { label: 'New born', value: 'New born' },
   { label: 'Child', value: 'Child' },
+  { label: 'Teenager', value: 'Teenager' },
   { label: 'Adult', value: 'Adult' },
+  { label: 'Senior Citizen', value: 'Senior Citizen' },
 ]
 
 const occupationOptions = [
   { label: 'Employed', value: 'Employed' },
   { label: 'Unemployed', value: 'Unemployed' },
+]
+
+const statusOptions = [
+  { label: 'Single', value: 'Single' },
+  { label: 'Married', value: 'Married' },
+  { label: 'Divorced', value: 'Divorced' },
+  { label: 'Widowed', value: 'Widowed' },
+]
+
+const streetOptions = [
+  { label: 'Purok 1', value: 'Purok 1' },
+  { label: 'Purok 2', value: 'Purok 2' },
+  { label: 'Purok 3', value: 'Purok 3' },
+  { label: 'Purok 4', value: 'Purok 4' },
+  { label: 'Purok 5', value: 'Purok 5' },
+  { label: 'Purok 6', value: 'Purok 6' },
 ]
 
 interface DataTableToolbarProps<TData> {
@@ -45,6 +64,13 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
+        {table.getColumn('street') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('street')}
+            title="Street"
+            options={streetOptions}
+          />
+        )}
         {table.getColumn('gender') && (
           <DataTableFacetedFilter
             column={table.getColumn('gender')}
@@ -55,8 +81,15 @@ export function DataTableToolbar<TData>({
         {table.getColumn('age_category') && (
           <DataTableFacetedFilter
             column={table.getColumn('age_category')}
-            title="Age Category"
+            title="Age"
             options={ageCategoryOptions}
+          />
+        )}
+        {table.getColumn('status') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('status')}
+            title="Status"
+            options={statusOptions}
           />
         )}
         {table.getColumn('occupation') && (
