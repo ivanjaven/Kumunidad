@@ -7,8 +7,23 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTableViewOptions } from './data-table-view-options'
 
-import { priorities, statuses } from '@/data/data'
 import { DataTableFacetedFilter } from './data-table-faceted-filter'
+
+const genderOptions = [
+  { label: 'Male', value: 'Male' },
+  { label: 'Female', value: 'Female' },
+]
+
+const ageCategoryOptions = [
+  { label: 'New born', value: 'New born' },
+  { label: 'Child', value: 'Child' },
+  { label: 'Adult', value: 'Adult' },
+]
+
+const occupationOptions = [
+  { label: 'Employed', value: 'Employed' },
+  { label: 'Unemployed', value: 'Unemployed' },
+]
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -23,25 +38,32 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+          placeholder="Filter names..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('title')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn('status') && (
+        {table.getColumn('gender') && (
           <DataTableFacetedFilter
-            column={table.getColumn('status')}
-            title="Status"
-            options={statuses}
+            column={table.getColumn('gender')}
+            title="Gender"
+            options={genderOptions}
           />
         )}
-        {table.getColumn('priority') && (
+        {table.getColumn('age_category') && (
           <DataTableFacetedFilter
-            column={table.getColumn('priority')}
-            title="Priority"
-            options={priorities}
+            column={table.getColumn('age_category')}
+            title="Age Category"
+            options={ageCategoryOptions}
+          />
+        )}
+        {table.getColumn('occupation') && (
+          <DataTableFacetedFilter
+            column={table.getColumn('occupation')}
+            title="Occupation"
+            options={occupationOptions}
           />
         )}
         {isFiltered && (

@@ -13,30 +13,28 @@ export async function GET(request: NextRequest) {
     const user = await Query({
       query: `
         SELECT 
-          r.resident_id, r.full_name, r.first_name, r.last_name, r.middle_name,
-          r.gender, r.date_of_birth, r.civil_status, r.barangay_status, r.image_base64,
-          r.is_archived, r.created_at, r.updated_at,
-          a.address_id, a.house_number, a.postal_code,
-          s.street_id, s.street_name, s.street_type,
-          b.barangay_id, b.barangay_name,
-          m.municipality_id, m.municipality_name, m.municipality_type,
-          p.province_id, p.province_name, p.region,
-          c.contact_id, c.email, c.mobile,
-          o.occupation_id, o.occupation_name,
-          n.nationality_id, n.nationality_name,
-          rel.religion_id, rel.religion_name,
-          ben.benefit_id, ben.benefit_name
+          r.resident_id AS id, r.full_name AS name,
+          r.gender, 
+          TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) AS age,
+          CASE 
+            WHEN TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) < 1 THEN 'New born'
+            WHEN TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) BETWEEN 1 AND 12 THEN 'Child'
+            WHEN TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) BETWEEN 13 AND 19 THEN 'Teenager'
+            WHEN TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) BETWEEN 20 AND 59 THEN 'Adult'
+            WHEN TIMESTAMPDIFF(YEAR, r.date_of_birth, CURDATE()) >= 60 THEN 'Senior Citizen'
+            ELSE 'Unknown'
+          END AS age_category,
+          r.civil_status AS status,
+          s.street_name AS street,
+          CASE 
+            WHEN o.occupation_name = 'N/A' THEN 'Unemployed'
+            ELSE 'Employed'
+          END AS occupation
         FROM residents r
         LEFT JOIN addresses a ON r.resident_id = a.resident_id
         LEFT JOIN streets s ON a.street_id = s.street_id
-        LEFT JOIN barangays b ON a.barangay_id = b.barangay_id
-        LEFT JOIN municipalities m ON a.municipality_id = m.municipality_id
-        LEFT JOIN provinces p ON a.province_id = p.province_id
-        LEFT JOIN contacts c ON r.resident_id = c.resident_id
         LEFT JOIN occupations o ON r.occupation_id = o.occupation_id
-        LEFT JOIN nationalities n ON r.nationality_id = n.nationality_id
-        LEFT JOIN religions rel ON r.religion_id = rel.religion_id
-        LEFT JOIN benefits ben ON r.benefit_id = ben.benefit_id
+        WHERE r.is_archived = false
       `,
       values: [],
     })

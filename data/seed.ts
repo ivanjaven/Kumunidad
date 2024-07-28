@@ -1,39 +1,43 @@
 import fs from 'fs'
 import path from 'path'
+import { fetchPopulationList } from '@/server/queries/fetch-population-list'
+import { PopulationTypedef } from '@/lib/typedef/population-typedef'
 
 import { labels, priorities, statuses } from './data'
 
-fs.writeFileSync(
-  path.join(__dirname, 'tasks.json'),
-  JSON.stringify(null, null, 2),
-)
+async function generateTasks() {
+  try {
+    console.log('Fetching population list...')
+    const populationList = await fetchPopulationList()
+    console.log(`Fetched ${populationList.length} population records`)
 
-console.log('✅ Tasks data generated.')
+    if (populationList.length === 0) {
+      throw new Error('Population list is empty')
+    }
 
-/**
- * 
- * 
- * import fs from 'fs'
-import path from 'path'
-import { faker } from '@faker-js/faker'
+    console.log('Generating tasks...')
+    const tasks = populationList.map((person: PopulationTypedef) => ({
+      street: `TASK-${person.id.toString().padStart(4, '0')}`,
+      name: `${person.occupation} task for ${person.name}`,
+      status: statuses[person.id % statuses.length].value,
+      label: labels[person.id % labels.length].value,
+      priority: priorities[person.id % priorities.length].value,
+    }))
 
-import { labels, priorities, statuses } from './data'
+    console.log(`Generated ${tasks.length} tasks`)
 
-const tasks = Array.from({ length: 100 }, () => ({
-  id: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
-  title: faker.hacker.phrase().replace(/^./, (letter) => letter.toUpperCase()),
-  status: faker.helpers.arrayElement(statuses).value,
-  label: faker.helpers.arrayElement(labels).value,
-  priority: faker.helpers.arrayElement(priorities).value,
-}))
+    const filePath = path.join(__dirname, 'tasks.json')
+    fs.writeFileSync(filePath, JSON.stringify(tasks, null, 2))
+    console.log(`Tasks data written to ${filePath}`)
 
-fs.writeFileSync(
-  path.join(__dirname, 'tasks.json'),
-  JSON.stringify(tasks, null, 2),
-)
+    console.log('✅ Tasks data generated successfully.')
+  } catch (error) {
+    console.error('Error generating tasks:', error)
+    if (error instanceof Error) {
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+  }
+}
 
-console.log('✅ Tasks data generated.')
-
- * 
- * 
- */
+generateTasks()
