@@ -50,7 +50,7 @@ export const columns: ColumnDef<Population>[] = [
     cell: ({ row }) => (
       <div className="flex items-center space-x-2">
         <span>{row.original.age}</span>
-        <Badge variant="secondary">{row.getValue('age_category')}</Badge>
+        <Badge variant="outline">{row.getValue('age_category')}</Badge>
       </div>
     ),
     filterFn: (row, id, value) => {
