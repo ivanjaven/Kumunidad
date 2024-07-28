@@ -1,0 +1,184 @@
+{
+	"info": {
+		"_postman_id": "6c32feaa-5b12-4130-afa7-9daaf01d7bcf",
+		"name": "API Docs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35404520"
+	},
+	"item": [
+		{
+			"name": "metadata",
+			"item": [
+				{
+					"name": "Metadata",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "resident",
+			"item": [
+				{
+					"name": "archived",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"is_archived\": \"1\",\r\n  \"resident_id\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/resident/archived",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"resident",
+								"archived"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"resident_id\": 1,\n  \"full_name\": \"John Doe Updated\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"middle_name\": \"Updated\",\n  \"gender\": \"Male\",\n  \"image_base64\": \"updatedbase64encodedimage\",\n  \"fingerprint_base64\": \"updatedbase64encodedfingerprint\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"civil_status\": \"Married\",\n  \"barangay_status\": \"In\",\n  \"house_number\": \"456\",\n  \"street_id\": 1,\n  \"barangay_id\": 1,\n  \"municipality_id\": 1,\n  \"province_id\": 1,\n  \"postal_code\": \"3018\",\n  \"email\": \"john.doe.updated@example.com\",\n  \"mobile\": \"9876543210\",\n  \"occupation_id\": 1,\n  \"nationality_id\": 1,\n  \"religion_id\": 1,\n  \"benefit_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/resident/edit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"resident",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"full_name\": \"John Doe\",\r\n  \"first_name\": \"John\",\r\n  \"last_name\": \"Doe\",\r\n  \"middle_name\": \"N/A\",\r\n  \"gender\": \"Male\",\r\n  \"image_base64\": \"base64encodedimage\",\r\n  \"fingerprint_base64\": \"base64encodedfingerprint\",\r\n  \"date_of_birth\": \"1990-01-01\",\r\n  \"civil_status\": \"Single\",\r\n  \"barangay_status\": \"In\",\r\n  \"house_number\": \"123\",\r\n  \"street_id\": \"1\",\r\n  \"barangay_id\": \"1\",\r\n  \"municipality_id\": \"1\",\r\n  \"province_id\": \"1\",\r\n  \"postal_code\": \"3017\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"mobile\": \"1234567890\",\r\n  \"occupation_id\": \"1\",\r\n  \"nationality_id\": \"1\",\r\n  \"religion_id\": \"1\",\r\n  \"benefit_id\": \"1\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/resident/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"resident",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "population",
+			"item": [
+				{
+					"name": "records",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/population/records",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"population",
+								"records"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search",
+			"item": [
+				{
+					"name": "search by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/search/resident/id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"search",
+								"resident",
+								"id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

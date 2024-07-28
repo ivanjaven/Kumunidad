@@ -375,7 +375,7 @@ VALUES ('N/A'), ('Health Insurance');
 
 -- Insert into residents
 INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, occupation_id, nationality_id, religion_id, benefit_id, is_archived)
-VALUES ('John Doe', 'John', 'Doe', 'Middle', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '1990-01-01', 'Single', 'In', 1, 1, 1, 1, FALSE);
+VALUES ('John Deniel Santos Dela Pena', 'John Deniel', 'Dela Pena', 'Santos', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '2006-01-01', 'Single', 'In', 1, 1, 1, 1, FALSE);
 
 -- Insert into addresses
 INSERT INTO addresses (resident_id, house_number, street_id, barangay_id, municipality_id, province_id, postal_code)

@@ -41,7 +41,7 @@ export default function PopulationPage() {
               Population Data Table
             </h2>
             <p className="text-muted-foreground">
-              Here&apos;s a list of the population!
+              Here&apos;s a list of the Records!
             </p>
           </div>
         </div>
