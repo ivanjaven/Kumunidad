@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "6c32feaa-5b12-4130-afa7-9daaf01d7bcf",
+		"_postman_id": "6c991cd3-a893-46ec-a4e5-a1a72b5a0a9d",
 		"name": "API Docs",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "35404520"
+		"_exporter_id": "36273434"
 	},
 	"item": [
 		{
@@ -157,6 +157,29 @@
 			"item": [
 				{
 					"name": "search by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/search/resident/id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"search",
+								"resident",
+								"id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search by full name",
 					"request": {
 						"method": "GET",
 						"header": [],

@@ -18,10 +18,10 @@ export async function GET(
 
     const { id } = params
     if (!id) {
-      return APIResponse({ error: 'ID parameter is required' }, 400)
+      return APIResponse({ error: 'Full Name parameter is required' }, 400)
     }
 
-    console.log('Fetching user with ID:', id)
+    console.log('Fetching user with Full Name:', id)
 
     const user = await Query({
       query: ` 
@@ -67,7 +67,7 @@ export async function GET(
       LEFT JOIN house_numbers AS hn1 ON addresses.house_number_id = hn1.house_number_id
       LEFT JOIN streets ON addresses.street_id = streets.street_id
       LEFT JOIN barangays ON addresses.barangay_id = barangays.barangay_id
-      WHERE residents.resident_id = ?`,
+      WHERE residents.full_name = ?`,
       values: [id],
     })
 
