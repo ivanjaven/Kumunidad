@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS contacts (
  * - resident_id: Foreign key referencing the residents table.
  * - required_fields: JSON array storing required fields for the document.
  * - issued_by: Name of the person who issued the document.
- * - captain_name: Name of the barangay captain in office at the time of issuance.
+ * - price: fee for processing the document
  * - issued_date: Date when the document was issued.
  * 
  * Constraints:
@@ -314,20 +314,38 @@ CREATE TABLE IF NOT EXISTS contacts (
  */
 CREATE TABLE IF NOT EXISTS documents (
     document_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    document_title ENUM('Barangay Business Clearance', 'Barangay Clearance', 'Blotter', 'Certificate of Indigency', 'Certificate of Residency') NOT NULL,
+    document_title ENUM('Barangay Business Clearance', 'Barangay Clearance', 'Certificate of Indigency', 'Certificate of Residency') NOT NULL,
     resident_id BIGINT UNSIGNED NOT NULL,
-    required_fields JSON,
-    issued_by VARCHAR(255),
-    captain_name VARCHAR(255),
+    required_fields JSON NOT NULL,
+    issued_by VARCHAR(255) NOT NULL,
+    price INT UNSIGNED NOT NULL,
     issued_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY fk_issued_document_resident (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
-
-
+/**
+ * Table: auth
+ * Description: Stores authentication information for residents.
+ * 
+ * Columns:
+ * - auth_id: Unique identifier for each authentication record.
+ * - role: Role of the resident (admin, secretary, treasurer, volunteer).
+ * - resident_id: Foreign key referencing the residents table.
+ * - username: Username for the resident.
+ * - password: Password for the resident.
+ * 
+ * Constraints:
+ * - Foreign key relationship with residents table.
+ */
+CREATE TABLE IF NOT EXISTS auth (
+    auth_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    role ENUM('admin', 'secretary', 'treasurer', 'volunteer') NOT NULL,
+    resident_id BIGINT UNSIGNED NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY fk_auth_resident (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 
@@ -386,10 +404,25 @@ INSERT INTO contacts (resident_id, email, mobile)
 VALUES (1, 'example@example.com', '1234567890');
 
 -- Insert into documents
-INSERT INTO documents (document_title, resident_id, required_fields, issued_by, captain_name, issued_date) 
+INSERT INTO documents (document_title, resident_id, required_fields, issued_by, price, issued_date) 
 VALUES 
-('Barangay Business Clearance', 1, '{"Business Name": "ABC Corp", "Address": "123 Main St"}', 'Officer A', 'Captain X', CURRENT_TIMESTAMP),
-('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Officer B', 'Captain Y', CURRENT_TIMESTAMP),
-('Blotter', 1, '{"Incident Description": "Theft Report", "Date": "2024-07-03"}', 'Officer C', 'Captain Z', CURRENT_TIMESTAMP),
-('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Officer D', 'Captain X', CURRENT_TIMESTAMP),
-('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Officer E', 'Captain Y', CURRENT_TIMESTAMP);
+('Barangay Business Clearance', 1, '{"Business Name": "ABC Corp", "Address": "123 Main St"}', 'Officer A', 20, CURRENT_TIMESTAMP),
+('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Officer B', 20, CURRENT_TIMESTAMP),
+('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Officer D', 20, CURRENT_TIMESTAMP),
+('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Officer E', 20, CURRENT_TIMESTAMP);
+
+-- Insert admin role
+INSERT INTO auth (role, resident_id, username, password)
+VALUES ('admin', 1, 'admin_user', 'hashed_password_here');
+
+-- Insert secretary role
+INSERT INTO auth (role, resident_id, username, password)
+VALUES ('secretary', 1, 'secretary_user', 'hashed_password_here');
+
+-- Insert treasurer role
+INSERT INTO auth (role, resident_id, username, password)
+VALUES ('treasurer', 1, 'treasurer_user', 'hashed_password_here');
+
+-- Insert volunteer role
+INSERT INTO auth (role, resident_id, username, password)
+VALUES ('volunteer', 1, 'volunteer_user', 'hashed_password_here');
