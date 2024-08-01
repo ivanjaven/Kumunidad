@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Search, Bell } from 'lucide-react'
 import {
   DropdownMenu,
@@ -17,16 +17,50 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { QuickAccessTypedef } from '@/lib/typedef/quick-access-typedef'
 import { BarangayConfig } from '@/lib/config/BARANGAY_CONFIG'
+import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef'
+import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
 
-// HomeDashboard Component definition
+const SearchSuggestion = ({
+  resident,
+}: {
+  resident: SearchSuggestionTypedef
+}) => (
+  <div className="flex items-center space-x-4 p-3 hover:bg-gray-100">
+    <Image
+      src={resident.image}
+      alt={resident.name}
+      width={40}
+      height={40}
+      className="rounded-full border border-gray-600"
+    />
+    <span className="text-sm font-medium text-black">{resident.name}</span>
+  </div>
+)
+
 export function HomeDashboard() {
   const { defaultSettings, userRoles } = BarangayConfig
-
-  // Define userRole state with type
   const [userRole, setUserRole] = useState<keyof typeof userRoles>('admin')
-
-  // Accessing quickAccessFeatures with correct type
   const quickAccessFeatures = userRoles[userRole].quickAccessFeatures
+  const [searchQuery, setSearchQuery] = useState('')
+  const [suggestions, setSuggestions] = useState<SearchSuggestionTypedef[]>([])
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchQuery.length > 2) {
+        try {
+          const results = await fetchSearchSuggestions(searchQuery)
+          setSuggestions(results)
+        } catch (error) {
+          console.error('Error fetching suggestions:', error)
+          setSuggestions([])
+        }
+      } else {
+        setSuggestions([])
+      }
+    }, 300)
+
+    return () => clearTimeout(delayDebounceFn)
+  }, [searchQuery])
 
   return (
     <div className="min-h-screen text-black">
@@ -49,10 +83,19 @@ export function HomeDashboard() {
               <div className="relative">
                 <Input
                   type="search"
-                  placeholder="Search..."
+                  placeholder="Search residents..."
                   className="w-72 rounded-full border-gray-300 py-2 pl-10 pr-4 focus:border-gray-500 focus:ring focus:ring-gray-200 focus:ring-opacity-50"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 transform text-gray-500" />
+                {suggestions.length > 0 && (
+                  <div className="absolute z-10 mt-3 w-full rounded-md border border-gray-300 bg-white shadow-lg">
+                    {suggestions.map((resident) => (
+                      <SearchSuggestion key={resident.id} resident={resident} />
+                    ))}
+                  </div>
+                )}
               </div>
               {/* Notification Button */}
               <Button variant="ghost" size="icon" className="hover:bg-gray-100">
