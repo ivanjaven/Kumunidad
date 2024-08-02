@@ -24,7 +24,6 @@ export async function PUT(request: NextRequest) {
       fingerprint_base64,
       date_of_birth,
       civil_status,
-      barangay_status,
       house_number,
       street_id,
       barangay_id,
@@ -50,7 +49,6 @@ export async function PUT(request: NextRequest) {
       !fingerprint_base64 ||
       !date_of_birth ||
       !civil_status ||
-      !barangay_status ||
       !house_number ||
       !street_id ||
       !barangay_id ||
@@ -70,7 +68,7 @@ export async function PUT(request: NextRequest) {
     // Update resident information
     await Query({
       query:
-        'UPDATE residents SET full_name = ?, first_name = ?, last_name = ?, middle_name = ?, gender = ?, image_base64 = ?, fingerprint_base64 = ?, date_of_birth = ?, civil_status = ?, barangay_status = ?, occupation_id = ?, nationality_id = ?, religion_id = ?, benefit_id = ? WHERE resident_id = ?',
+        'UPDATE residents SET full_name = ?, first_name = ?, last_name = ?, middle_name = ?, gender = ?, image_base64 = ?, fingerprint_base64 = ?, date_of_birth = ?, civil_status = ?, occupation_id = ?, nationality_id = ?, religion_id = ?, benefit_id = ? WHERE resident_id = ?',
       values: [
         full_name,
         first_name,
@@ -81,7 +79,6 @@ export async function PUT(request: NextRequest) {
         fingerprint_base64,
         date_of_birth,
         civil_status,
-        barangay_status,
         occupation_id,
         nationality_id,
         religion_id,

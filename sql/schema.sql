@@ -199,7 +199,6 @@ CREATE TABLE IF NOT EXISTS benefits (
  * - image_base64, fingerprint_base64: Biometric data stored as base64 strings.
  * - date_of_birth: Resident's date of birth.
  * - civil_status: Marital status of the resident.
- * - barangay_status: Whether the resident is currently in the barangay or not.
  * - occupation_id, nationality_id, religion_id, benefit_id: Foreign keys to respective tables.
  * - is_archived: Flag to indicate if the resident record is archived.
  * 
@@ -220,7 +219,6 @@ CREATE TABLE IF NOT EXISTS residents (
     fingerprint_base64 LONGTEXT,
     date_of_birth DATE NOT NULL,
     civil_status ENUM('Single', 'Married', 'Divorced', 'Widowed') NOT NULL,
-    barangay_status ENUM('In', 'Out') NOT NULL,
     occupation_id INT UNSIGNED,
     nationality_id INT UNSIGNED,
     religion_id INT UNSIGNED,
@@ -392,8 +390,8 @@ INSERT INTO benefits (benefit_name)
 VALUES ('N/A'), ('Health Insurance');
 
 -- Insert into residents
-INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, occupation_id, nationality_id, religion_id, benefit_id, is_archived)
-VALUES ('John Deniel Santos Dela Pena', 'John Deniel', 'Dela Pena', 'Santos', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '2006-01-01', 'Single', 'In', 1, 1, 1, 1, FALSE);
+INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, occupation_id, nationality_id, religion_id, benefit_id, is_archived)
+VALUES ('John Deniel Santos Dela Pena', 'John Deniel', 'Dela Pena', 'Santos', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '2006-01-01', 'Single', 1, 1, 1, 1, FALSE);
 
 -- Insert into addresses
 INSERT INTO addresses (resident_id, house_number, street_id, barangay_id, municipality_id, province_id, postal_code)

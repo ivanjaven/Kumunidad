@@ -71,7 +71,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"resident_id\": 1,\n  \"full_name\": \"John Doe Updated\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"middle_name\": \"Updated\",\n  \"gender\": \"Male\",\n  \"image_base64\": \"updatedbase64encodedimage\",\n  \"fingerprint_base64\": \"updatedbase64encodedfingerprint\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"civil_status\": \"Married\",\n  \"barangay_status\": \"In\",\n  \"house_number\": \"456\",\n  \"street_id\": 1,\n  \"barangay_id\": 1,\n  \"municipality_id\": 1,\n  \"province_id\": 1,\n  \"postal_code\": \"3018\",\n  \"email\": \"john.doe.updated@example.com\",\n  \"mobile\": \"9876543210\",\n  \"occupation_id\": 1,\n  \"nationality_id\": 1,\n  \"religion_id\": 1,\n  \"benefit_id\": 1\n}",
+							"raw": "{\n  \"resident_id\": 102,\n  \"full_name\": \"John Doe Updated\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"middle_name\": \"Updated\",\n  \"gender\": \"Male\",\n  \"image_base64\": \"updatedbase64encodedimage\",\n  \"fingerprint_base64\": \"updatedbase64encodedfingerprint\",\n  \"date_of_birth\": \"1990-01-01\",\n  \"civil_status\": \"Married\",\n  \"house_number\": \"456\",\n  \"street_id\": 1,\n  \"barangay_id\": 1,\n  \"municipality_id\": 1,\n  \"province_id\": 1,\n  \"postal_code\": \"3018\",\n  \"email\": \"john.doe.updated@example.com\",\n  \"mobile\": \"9876543210\",\n  \"occupation_id\": 1,\n  \"nationality_id\": 1,\n  \"religion_id\": 1,\n  \"benefit_id\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -101,7 +101,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"full_name\": \"John Doe\",\r\n  \"first_name\": \"John\",\r\n  \"last_name\": \"Doe\",\r\n  \"middle_name\": \"N/A\",\r\n  \"gender\": \"Male\",\r\n  \"image_base64\": \"base64encodedimage\",\r\n  \"fingerprint_base64\": \"base64encodedfingerprint\",\r\n  \"date_of_birth\": \"1990-01-01\",\r\n  \"civil_status\": \"Single\",\r\n  \"barangay_status\": \"In\",\r\n  \"house_number\": \"123\",\r\n  \"street_id\": \"1\",\r\n  \"barangay_id\": \"1\",\r\n  \"municipality_id\": \"1\",\r\n  \"province_id\": \"1\",\r\n  \"postal_code\": \"3017\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"mobile\": \"1234567890\",\r\n  \"occupation_id\": \"1\",\r\n  \"nationality_id\": \"1\",\r\n  \"religion_id\": \"1\",\r\n  \"benefit_id\": \"1\"\r\n}\r\n",
+							"raw": "{\r\n  \"full_name\": \"John Doe\",\r\n  \"first_name\": \"John\",\r\n  \"last_name\": \"Doe\",\r\n  \"middle_name\": \"N/A\",\r\n  \"gender\": \"Male\",\r\n  \"image_base64\": \"base64encodedimage\",\r\n  \"fingerprint_base64\": \"base64encodedfingerprint\",\r\n  \"date_of_birth\": \"1990-01-01\",\r\n  \"civil_status\": \"Single\",\r\n  \"house_number\": \"123\",\r\n  \"street_id\": \"1\",\r\n  \"barangay_id\": \"1\",\r\n  \"municipality_id\": \"1\",\r\n  \"province_id\": \"1\",\r\n  \"postal_code\": \"3017\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"mobile\": \"1234567890\",\r\n  \"occupation_id\": \"1\",\r\n  \"nationality_id\": \"1\",\r\n  \"religion_id\": \"1\",\r\n  \"benefit_id\": \"1\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"

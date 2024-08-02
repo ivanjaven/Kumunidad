@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
       fingerprint_base64,
       date_of_birth,
       civil_status,
-      barangay_status,
       house_number,
       street_id,
       barangay_id,
@@ -48,7 +47,6 @@ export async function POST(request: NextRequest) {
       !fingerprint_base64 ||
       !date_of_birth ||
       !civil_status ||
-      !barangay_status ||
       !house_number ||
       !street_id ||
       !barangay_id ||
@@ -68,7 +66,7 @@ export async function POST(request: NextRequest) {
     // Insert resident information
     const residentResult = await Query({
       query:
-        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, barangay_status, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO residents (full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, occupation_id, nationality_id, religion_id, benefit_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       values: [
         full_name,
         first_name,
@@ -79,7 +77,6 @@ export async function POST(request: NextRequest) {
         fingerprint_base64,
         date_of_birth,
         civil_status,
-        barangay_status,
         occupation_id,
         nationality_id,
         religion_id,

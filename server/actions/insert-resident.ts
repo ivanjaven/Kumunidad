@@ -15,7 +15,6 @@ export async function insertResident(data: RegistrationTypedef): Promise<any> {
       fingerprint_base64: 'base64encodedfingerprint',
       date_of_birth: `${data.year}-${data.month}-${data.day}`,
       civil_status: data.status,
-      barangay_status: 'In',
       house_number: data.houseNumber,
       street_id: data.street,
       barangay_id: '1',

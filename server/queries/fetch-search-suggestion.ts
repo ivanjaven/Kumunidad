@@ -3,7 +3,7 @@ import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef
 export async function fetchSearchSuggestions(
   query: string,
 ): Promise<SearchSuggestionTypedef[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
   const endpoint = `/api/search/resident/name/${query}`
 
   try {
