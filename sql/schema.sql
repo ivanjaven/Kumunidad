@@ -323,6 +323,83 @@ CREATE TABLE IF NOT EXISTS documents (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /**
+ * Table: incident_reports
+ * Description: Stores basic information about incident reports.
+ * 
+ * Columns:
+ * - case_number: Unique identifier for each incident report.
+ * - title: Brief title or description of the incident.
+ * - case_status: Current status of the case (Active, Closed, Resolved).
+ * - created_at: Timestamp when the report was created.
+ * - updated_at: Timestamp of the last update to the report.
+ * 
+ * Indexes:
+ * - Primary key on case_number for efficient lookups.
+ */
+CREATE TABLE IF NOT EXISTS incident_reports (
+    case_number BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    case_status ENUM('Active', 'Closed', 'Resolved') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/**
+ * Table: incident_narratives
+ * Description: Stores detailed narratives associated with incident reports.
+ * 
+ * Columns:
+ * - narrative_id: Unique identifier for each narrative entry.
+ * - case_number_id: Foreign key linking to the incident_reports table.
+ * - narrative: Detailed text description of the incident.
+ * - created_at: Timestamp when the narrative was created.
+ * - updated_at: Timestamp of the last update to the narrative.
+ * 
+ * Constraints:
+ * - Foreign key relationship with incident_reports table.
+ * 
+ * Indexes:
+ * - Primary key on narrative_id for efficient lookups.
+ */
+CREATE TABLE IF NOT EXISTS incident_narratives (
+    narrative_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    case_number_id BIGINT UNSIGNED NOT NULL,
+    narrative TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_incident_narrative_incident_report (case_number_id) REFERENCES incident_reports(case_number) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/**
+ * Table: incident_participants
+ * Description: Links residents to incident reports and defines their roles.
+ * 
+ * Columns:
+ * - participant_id: Unique identifier for each participant entry.
+ * - case_number_id: Foreign key linking to the incident_reports table.
+ * - resident_id: Foreign key linking to the residents table.
+ * - role: Role of the participant in the incident (Complainant or Offender).
+ * - created_at: Timestamp when the participant entry was created.
+ * - updated_at: Timestamp of the last update to the participant entry.
+ * 
+ * Constraints:
+ * - Foreign key relationships with incident_reports and residents tables.
+ * 
+ * Indexes:
+ * - Primary key on participant_id for efficient lookups.
+ */
+CREATE TABLE IF NOT EXISTS incident_participants (
+    participant_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    case_number_id BIGINT UNSIGNED NOT NULL,
+    resident_id BIGINT UNSIGNED NOT NULL,
+    role ENUM('Complainant', 'Offender') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_incident_participant_incident_report (case_number_id) REFERENCES incident_reports(case_number) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY fk_incident_participant_resident (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/**
  * Table: auth
  * Description: Stores authentication information for residents.
  * 
@@ -408,6 +485,35 @@ VALUES
 ('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Officer B', 20, CURRENT_TIMESTAMP),
 ('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Officer D', 20, CURRENT_TIMESTAMP),
 ('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Officer E', 20, CURRENT_TIMESTAMP);
+
+-- Insert into incident_reports
+INSERT INTO incident_reports (title, case_status) VALUES
+('Noise Complaint', 'Active'),
+('Vandalism', 'Active');
+
+-- Insert into incident_narratives
+INSERT INTO incident_narratives (case_number_id, narrative) VALUES
+(1, 'Resident reported loud music from neighboring house at 11 PM.'),
+(1, 'Officer responded at 11:30 PM. Music was still audible from the street.'),
+(1, 'Spoke with the neighbor, who agreed to lower the volume.'),
+(1, 'Follow-up at 12:15 AM confirmed the noise issue was resolved.'),
+(2, 'Graffiti found on public library wall. Clean-up scheduled.'),
+(2, 'Photos taken of the graffiti for documentation.'),
+(2, 'Local cleaning crew contacted for removal, estimated cost $500.'),
+(2, 'Security camera footage requested from library staff to identify potential suspects.');
+
+-- Insert into incident_participants (at least 10 entries)
+INSERT INTO incident_participants (case_number_id, resident_id, role) VALUES
+(1, 1, 'Complainant'),
+(1, 1, 'Offender'),
+(2, 1, 'Complainant'),
+(2, 1, 'Offender'),
+(1, 1, 'Complainant'),
+(1, 1, 'Offender'),
+(2, 1, 'Complainant'),
+(2, 1, 'Offender'),
+(1, 1, 'Complainant'),
+(2, 1, 'Complainant');
 
 -- Insert admin role
 INSERT INTO auth (role, resident_id, username, password)
