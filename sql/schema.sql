@@ -481,10 +481,10 @@ VALUES (1, 'example@example.com', '1234567890');
 -- Insert into documents
 INSERT INTO documents (document_title, resident_id, required_fields, issued_by, price, issued_date) 
 VALUES 
-('Barangay Business Clearance', 1, '{"Business Name": "ABC Corp", "Address": "123 Main St"}', 'Officer A', 20, CURRENT_TIMESTAMP),
-('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Officer B', 20, CURRENT_TIMESTAMP),
-('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Officer D', 20, CURRENT_TIMESTAMP),
-('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Officer E', 20, CURRENT_TIMESTAMP);
+('Barangay Business Clearance', 1, '{"Business Name": "ABC Corp", "Address": "123 Main St"}', 'Secretary Kristina Marie Santos', 20, CURRENT_TIMESTAMP),
+('Barangay Clearance', 1, '{"Purpose": "General Clearance", "Address": "456 Elm St"}', 'Secretary Kristina Marie Santos', 20, CURRENT_TIMESTAMP),
+('Certificate of Indigency', 1, '{"Income": "Below Minimum Wage", "Dependents": "3"}', 'Secretary Kristina Marie Santos', 20, CURRENT_TIMESTAMP),
+('Certificate of Residency', 1, '{"Years of Residency": "5", "Address": "789 Oak St"}', 'Secretary Kristina Marie Santos', 20, CURRENT_TIMESTAMP);
 
 -- Insert into incident_reports
 INSERT INTO incident_reports (title, case_status) VALUES
@@ -493,14 +493,14 @@ INSERT INTO incident_reports (title, case_status) VALUES
 
 -- Insert into incident_narratives
 INSERT INTO incident_narratives (case_number_id, narrative) VALUES
-(1, 'Resident reported loud music from neighboring house at 11 PM.'),
-(1, 'Officer responded at 11:30 PM. Music was still audible from the street.'),
-(1, 'Spoke with the neighbor, who agreed to lower the volume.'),
-(1, 'Follow-up at 12:15 AM confirmed the noise issue was resolved.'),
-(2, 'Graffiti found on public library wall. Clean-up scheduled.'),
-(2, 'Photos taken of the graffiti for documentation.'),
-(2, 'Local cleaning crew contacted for removal, estimated cost $500.'),
-(2, 'Security camera footage requested from library staff to identify potential suspects.');
+(1, 'Resident reported loud music from a neighboring house at 11 PM. This was a recurring issue that had been reported previously. Several other residents in the vicinity also complained about the noise. The resident noted that the loud music was causing disturbance and affecting their sleep.'),
+(1, 'Officer responded to the complaint at 11:30 PM. Upon arrival, the music was still audible from the street, confirming the resident’s report. The officer observed multiple residents visibly disturbed by the noise. The officer proceeded to approach the house to address the issue directly.'),
+(1, 'The officer spoke with the neighbor who was playing the loud music. The neighbor initially seemed uncooperative but eventually agreed to lower the volume after understanding the impact on the community. The officer explained the noise ordinance and the importance of maintaining a peaceful environment.'),
+(1, 'A follow-up check was conducted at 12:15 AM to ensure the noise issue was resolved. The officer patrolled the area and confirmed that the loud music had been turned down significantly, bringing relief to the affected residents. The situation appeared to be under control, with no further complaints.'),
+(2, 'Graffiti was found on the public library wall early in the morning. The library staff discovered the vandalism and immediately reported it to the authorities. The graffiti included various symbols and tags, some of which were offensive. This incident marks the second occurrence of graffiti at the library in the past month.'),
+(2, 'Photos were taken of the graffiti for documentation and evidence purposes. These images will be used to assist in identifying the vandals. The detailed photographs captured the extent of the damage, highlighting the need for a prompt cleanup. The library staff expressed concern over the increasing vandalism.'),
+(2, 'A local cleaning crew was contacted to schedule the removal of the graffiti. The estimated cost for the cleanup was determined to be $500. The cleaning crew was chosen based on their expertise in removing graffiti without causing further damage to the property. The cleanup was scheduled to be completed within two days.'),
+(2, 'Security camera footage was requested from the library staff to help identify potential suspects responsible for the graffiti. The footage will be reviewed by the authorities to gather evidence and possibly recognize any suspicious individuals or activities around the time the vandalism occurred.');
 
 -- Insert into incident_participants (at least 10 entries)
 INSERT INTO incident_participants (case_number_id, resident_id, role) VALUES
