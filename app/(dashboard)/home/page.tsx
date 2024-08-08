@@ -122,9 +122,9 @@ export default function HomeDashboard() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Acc Settings</DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Link href="/activity">Activity Logs</Link>
-                  </DropdownMenuItem>
+                  <Link href="/activity">
+                    <DropdownMenuItem>Activity Logs</DropdownMenuItem>
+                  </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
