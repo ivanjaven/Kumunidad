@@ -73,9 +73,7 @@ export default function ActivityLogPage() {
         className="flex items-center justify-between rounded-lg border border-gray-200 p-4 md:p-6 lg:p-8"
       >
         <div>
-          <p className="text-sm font-medium text-black">
-            {activity.weekday} - {activity.date}
-          </p>
+          <p className="text-sm font-medium text-black">{activity.date}</p>
           <p className="text-sm text-gray-600">{activity.description}</p>
         </div>
         <div className="flex items-center space-x-4">

@@ -55,8 +55,7 @@ export async function GET(request: NextRequest) {
         SELECT 
           event_label AS label,
           event_description AS description,
-          DATE_FORMAT(created_at, '%b %d, %Y %h:%i %p') AS date,
-          DATE_FORMAT(created_at, '%a') AS weekday
+          DATE_FORMAT(created_at, '%a - %b %d, %Y - %h:%i %p') AS date
         FROM event_data
         ORDER BY created_at DESC
         LIMIT ? OFFSET ?;
