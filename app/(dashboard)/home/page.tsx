@@ -121,14 +121,14 @@ export default function HomeDashboard() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>My Settings</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <Link href="/legal/hub">
-                    <DropdownMenuItem>Legal Hub</DropdownMenuItem>
-                  </Link>
-                  <Link href="/activity">
+                  <Link href="/activity-logs">
                     <DropdownMenuItem>Activity Logs</DropdownMenuItem>
                   </Link>
-                  <Link href="/profile">
+                  <Link href="/profile-account">
                     <DropdownMenuItem>Profile Account</DropdownMenuItem>
+                  </Link>
+                  <Link href="/legal-privacy">
+                    <DropdownMenuItem>Legal & Privacy</DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>

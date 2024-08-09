@@ -166,51 +166,51 @@ export function ProfileAccountAdmin() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
       <Dialog open={showAvatarSearch} onOpenChange={setShowAvatarSearch}>
-        <DialogContent className="border border-black px-8 py-6">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">
+        <DialogContent className="w-full max-w-md border border-black bg-white p-8">
+          <DialogHeader className="mb-6">
+            <DialogTitle className="text-2xl font-bold text-black">
               Change Admin User
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="mt-2 text-gray-600">
               Search and select a new admin user.
             </DialogDescription>
           </DialogHeader>
-          <Command className="rounded-lg border shadow-md">
+          <Command className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
             <CommandInput
               placeholder="Search users..."
               value={searchQuery}
               onValueChange={setSearchQuery}
+              className="px-4 py-3 text-sm focus:outline-none"
             />
-            <CommandEmpty>No users found.</CommandEmpty>
+            <CommandEmpty className="py-6 text-center text-sm text-gray-500">
+              No users found.
+            </CommandEmpty>
             <CommandGroup>
               {filteredAvatars.map((suggestion) => (
                 <CommandItem
                   key={suggestion.name}
                   onSelect={() => handleAvatarSelect(suggestion.avatar)}
-                  className="flex cursor-pointer items-center space-x-2 px-4 py-2 hover:bg-gray-100"
+                  className="flex cursor-pointer items-center space-x-3 px-4 py-3 transition-colors hover:bg-gray-50"
                 >
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-10 w-10 border border-gray-200">
                     <AvatarImage
                       src={suggestion.avatar}
                       alt={suggestion.name}
+                      className="object-cover"
                     />
-                    <AvatarFallback>{suggestion.name[0]}</AvatarFallback>
+                    <AvatarFallback className="bg-gray-100 font-medium text-black">
+                      {suggestion.name[0]}
+                    </AvatarFallback>
                   </Avatar>
-                  <span>{suggestion.name}</span>
+                  <span className="text-sm font-medium text-black">
+                    {suggestion.name}
+                  </span>
                 </CommandItem>
               ))}
             </CommandGroup>
           </Command>
-          <DialogFooter className="mt-6">
-            <Button
-              variant="outline"
-              className="border border-black px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-black hover:text-white focus:outline-none focus:ring-1 focus:ring-black"
-              onClick={() => setShowAvatarSearch(false)}
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

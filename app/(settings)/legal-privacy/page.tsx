@@ -54,7 +54,7 @@ export default function Component() {
           {/* Left Sidebar */}
           <div className="border-b border-gray-200 p-6 md:w-64 md:border-b-0 md:border-r">
             <h2 className="mb-6 text-2xl font-bold uppercase tracking-wide">
-              Legal Hub
+              Legal & Privacy
             </h2>
             <nav>
               <ul className="space-y-4">
