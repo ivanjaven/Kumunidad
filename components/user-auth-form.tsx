@@ -102,10 +102,9 @@ export function UserAuthForm() {
           </span>
         </div>
       </div>
-
       <Button
         variant="outline"
-        className="rounded-md border border-input bg-transparent px-3 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        className="border border-black px-3 py-2 text-sm font-medium text-black transition-colors hover:bg-black hover:text-white focus:outline-none focus:ring-1 focus:ring-black"
       >
         <FingerprintIcon className="mr-2 h-5 w-5" />
         Scan Fingerprint

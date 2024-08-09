@@ -119,11 +119,16 @@ export default function HomeDashboard() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel>My Settings</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Acc Settings</DropdownMenuItem>
+                  <Link href="/legal/hub">
+                    <DropdownMenuItem>Legal Hub</DropdownMenuItem>
+                  </Link>
                   <Link href="/activity">
                     <DropdownMenuItem>Activity Logs</DropdownMenuItem>
+                  </Link>
+                  <Link href="/profile">
+                    <DropdownMenuItem>Profile Account</DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Logout</DropdownMenuItem>
