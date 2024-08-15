@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dialog'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
+import { toast } from 'sonner'
 
 export default function BarangayInformationPage() {
   const [officials, setOfficials] = useState<BlogTypedef[]>(
@@ -44,6 +45,8 @@ export default function BarangayInformationPage() {
     })),
   )
   const [skKagawads, setSkKagawads] = useState<BlogTypedef[]>([])
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({})
 
@@ -57,13 +60,30 @@ export default function BarangayInformationPage() {
             i === index
               ? { ...official, image: e.target?.result as string }
               : official
-
-          setOfficials((prev) => prev.map(updateOfficial))
-          setKagawads((prev) => prev.map(updateOfficial))
-          setLupons((prev) => prev.map(updateOfficial))
-          setTanods((prev) => prev.map(updateOfficial))
-          setSkOfficials((prev) => prev.map(updateOfficial))
-          setSkKagawads((prev) => prev.map(updateOfficial))
+          switch (role) {
+            case 'Punong Barangay':
+            case 'Barangay Secretary':
+            case 'Barangay Treasurer':
+              setOfficials((prev) => prev.map(updateOfficial))
+              break
+            case 'Barangay Kagawad':
+              setKagawads((prev) => prev.map(updateOfficial))
+              break
+            case 'Lupong Tagapamayapa':
+              setLupons((prev) => prev.map(updateOfficial))
+              break
+            case 'Barangay Tanod':
+              setTanods((prev) => prev.map(updateOfficial))
+              break
+            case 'SK Chairperson':
+            case 'SK Secretary':
+            case 'SK Treasurer':
+              setSkOfficials((prev) => prev.map(updateOfficial))
+              break
+            case 'SK Kagawad':
+              setSkKagawads((prev) => prev.map(updateOfficial))
+              break
+          }
         }
         reader.readAsDataURL(file)
       }
@@ -75,23 +95,36 @@ export default function BarangayInformationPage() {
     (role: Role, index: number, name: string) => {
       const updateOfficial = (official: BlogTypedef, i: number) =>
         i === index ? { ...official, name } : official
-
-      setOfficials((prev) => prev.map(updateOfficial))
-      setKagawads((prev) => prev.map(updateOfficial))
-      setLupons((prev) => prev.map(updateOfficial))
-      setTanods((prev) => prev.map(updateOfficial))
-      setSkOfficials((prev) => prev.map(updateOfficial))
-      setSkKagawads((prev) => prev.map(updateOfficial))
+      switch (role) {
+        case 'Punong Barangay':
+        case 'Barangay Secretary':
+        case 'Barangay Treasurer':
+          setOfficials((prev) => prev.map(updateOfficial))
+          break
+        case 'Barangay Kagawad':
+          setKagawads((prev) => prev.map(updateOfficial))
+          break
+        case 'Lupong Tagapamayapa':
+          setLupons((prev) => prev.map(updateOfficial))
+          break
+        case 'Barangay Tanod':
+          setTanods((prev) => prev.map(updateOfficial))
+          break
+        case 'SK Chairperson':
+        case 'SK Secretary':
+        case 'SK Treasurer':
+          setSkOfficials((prev) => prev.map(updateOfficial))
+          break
+        case 'SK Kagawad':
+          setSkKagawads((prev) => prev.map(updateOfficial))
+          break
+      }
     },
     [],
   )
 
   const addOfficial = useCallback((role: Role) => {
-    const newOfficial: BlogTypedef = {
-      role,
-      name: '',
-      image: null,
-    }
+    const newOfficial: BlogTypedef = { role, name: '', image: null }
     switch (role) {
       case 'Barangay Kagawad':
         setKagawads((prev) => [...prev, newOfficial])
@@ -111,7 +144,6 @@ export default function BarangayInformationPage() {
   const removeOfficial = useCallback((role: Role, index: number) => {
     const removeFromArray = (array: BlogTypedef[]) =>
       array.filter((_, i) => i !== index)
-
     switch (role) {
       case 'Barangay Kagawad':
         setKagawads((prev) => removeFromArray(prev))
@@ -208,16 +240,60 @@ export default function BarangayInformationPage() {
   )
 
   const handleSubmit = useCallback(() => {
-    // Handle form submission
-    console.log('Form submitted', {
-      officials,
-      kagawads,
-      lupons,
-      tanods,
-      skOfficials,
-      skKagawads,
-    })
-  }, [officials, kagawads, lupons, tanods, skOfficials, skKagawads])
+    const allData = {
+      executiveOfficials: officials,
+      kagawads: kagawads,
+      lupons: lupons,
+      tanods: tanods,
+      skExecutiveOfficials: skOfficials,
+      skKagawads: skKagawads,
+      startYear: (document.getElementById('startYear') as HTMLInputElement)
+        ?.value,
+      endYear: (document.getElementById('endYear') as HTMLInputElement)?.value,
+      termsAccepted: termsAccepted,
+    }
+
+    const errors: string[] = []
+
+    const checkOfficials = (officials: BlogTypedef[], roleName: string) => {
+      officials.forEach((official, index) => {
+        if (!official.name)
+          errors.push(`${roleName} #${index + 1} name is required`)
+        if (!official.image)
+          errors.push(`${roleName} #${index + 1} image is required`)
+      })
+    }
+
+    checkOfficials(allData.executiveOfficials, 'Executive Official')
+    checkOfficials(allData.kagawads, 'Kagawad')
+    checkOfficials(allData.lupons, 'Lupon')
+    checkOfficials(allData.tanods, 'Tanod')
+    checkOfficials(allData.skExecutiveOfficials, 'SK Executive Official')
+    checkOfficials(allData.skKagawads, 'SK Kagawad')
+
+    if (!allData.startYear) errors.push('Starting year is required')
+    if (!allData.endYear) errors.push('Ending year is required')
+    if (!termsAccepted) errors.push('You must accept the terms and conditions')
+
+    if (errors.length > 0) {
+      toast.error(errors[0], { duration: 3000 })
+    } else {
+      console.log(
+        'Form submitted with the following data:',
+        JSON.stringify(allData, null, 2),
+      )
+      toast.success('Form submitted successfully', { duration: 3000 })
+      setIsDialogOpen(false)
+    }
+  }, [
+    officials,
+    kagawads,
+    lupons,
+    tanods,
+    skOfficials,
+    skKagawads,
+    termsAccepted,
+  ])
 
   const renderSection = useCallback(
     (title: string, key: string, infoText: string) => {
@@ -277,93 +353,104 @@ export default function BarangayInformationPage() {
   )
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button>Manage Barangay Officials</Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-6xl">
-        <DialogHeader>
-          <DialogTitle>Barangay Officials</DialogTitle>
-        </DialogHeader>
-        <div className="max-h-[70vh] overflow-y-auto p-6">
-          <div className="space-y-12">
-            {BLOG_CONFIG.SECTIONS.map((section, index) => (
-              <div key={section.key}>
-                {renderSection(section.title, section.key, section.infoText)}
-                {index < BLOG_CONFIG.SECTIONS.length - 1 && (
-                  <Separator className="my-12" />
-                )}
-              </div>
-            ))}
-          </div>
-
-          <Separator className="my-12" />
-
-          <div className="mb-8 flex flex-col gap-8">
-            <div className="w-full">
-              <p className="mb-6 text-gray-700">{BLOG_CONFIG.TERM_INFO_TEXT}</p>
+    <>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTrigger asChild>
+          <Button>Manage Barangay Officials</Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-6xl">
+          <DialogHeader>
+            <DialogTitle>Barangay Officials</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[70vh] overflow-y-auto p-6">
+            <div className="space-y-12">
+              {BLOG_CONFIG.SECTIONS.map((section, index) => (
+                <div key={section.key}>
+                  {renderSection(section.title, section.key, section.infoText)}
+                  {index < BLOG_CONFIG.SECTIONS.length - 1 && (
+                    <Separator className="my-12" />
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="flex flex-col gap-6 md:flex-row">
-              <div className="w-full md:w-1/2">
-                <Label
-                  htmlFor="startYear"
-                  className="text-sm font-medium text-gray-900"
-                >
-                  Starting Year
-                </Label>
-                <Input
-                  id="startYear"
-                  placeholder="Enter starting year"
-                  className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            <Separator className="my-12" />
+            <div className="mb-8 flex flex-col gap-8">
+              <div className="w-full">
+                <p className="mb-6 text-gray-700">
+                  {BLOG_CONFIG.TERM_INFO_TEXT}
+                </p>
+              </div>
+              <div className="flex flex-col gap-6 md:flex-row">
+                <div className="w-full md:w-1/2">
+                  <Label
+                    htmlFor="startYear"
+                    className="text-sm font-medium text-gray-900"
+                  >
+                    Starting Year
+                  </Label>
+                  <Input
+                    id="startYear"
+                    placeholder="Enter starting year"
+                    className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+                <div className="w-full md:w-1/2">
+                  <Label
+                    htmlFor="endYear"
+                    className="text-sm font-medium text-gray-900"
+                  >
+                    Ending Year
+                  </Label>
+                  <Input
+                    id="endYear"
+                    placeholder="Enter ending year"
+                    className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+              <div className="mt-6 flex items-center">
+                <Checkbox
+                  id="terms"
+                  className="mr-2"
+                  checked={termsAccepted}
+                  onCheckedChange={(checked) =>
+                    setTermsAccepted(checked as boolean)
+                  }
                 />
-              </div>
-              <div className="w-full md:w-1/2">
                 <Label
-                  htmlFor="endYear"
-                  className="text-sm font-medium text-gray-900"
+                  htmlFor="terms"
+                  className="flex items-center space-x-1 text-sm font-medium text-gray-700"
                 >
-                  Ending Year
+                  <span>{BLOG_CONFIG.TERMS_AND_CONDITIONS.TEXT}</span>
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <p className="cursor-pointer text-blue-500 underline">
+                        {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
+                      </p>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 p-4">
+                      <h3 className="text-lg font-semibold">
+                        {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
+                      </h3>
+                      <p className="mt-2 text-sm text-gray-600">
+                        {BLOG_CONFIG.TERMS_AND_CONDITIONS.CONTENT}
+                      </p>
+                    </HoverCardContent>
+                  </HoverCard>
                 </Label>
-                <Input
-                  id="endYear"
-                  placeholder="Enter ending year"
-                  className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
               </div>
-            </div>
-            <div className="mt-6 flex items-center">
-              <Checkbox id="terms" className="mr-2" />
-              <Label
-                htmlFor="terms"
-                className="flex items-center space-x-1 text-sm font-medium text-gray-700"
-              >
-                <span>{BLOG_CONFIG.TERMS_AND_CONDITIONS.TEXT}</span>
-                <HoverCard>
-                  <HoverCardTrigger>
-                    <p className="cursor-pointer text-blue-500 underline">
-                      {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
-                    </p>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80 p-4">
-                    <h3 className="text-lg font-semibold">
-                      {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
-                    </h3>
-                    <p className="mt-2 text-sm text-gray-600">
-                      {BLOG_CONFIG.TERMS_AND_CONDITIONS.CONTENT}
-                    </p>
-                  </HoverCardContent>
-                </HoverCard>
-              </Label>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end gap-4 p-6">
-          <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DialogClose>
-          <Button onClick={handleSubmit}>Save</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+          <div className="flex justify-end gap-4 p-6">
+            <DialogClose asChild>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button onClick={handleSubmit}>Save</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
