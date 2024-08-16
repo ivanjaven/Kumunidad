@@ -50,8 +50,8 @@ export function useBarangayOfficialForm({
     setOfficials(
       BLOG_CONFIG.OFFICIALS.EXECUTIVE.map((official) => ({
         role: official.role as Role,
-        name: official.name,
-        image: official.image,
+        name: '',
+        image: null,
       })),
     )
     setKagawads([{ role: 'Barangay Kagawad' as Role, name: '', image: null }])
@@ -60,8 +60,8 @@ export function useBarangayOfficialForm({
     setSkOfficials(
       BLOG_CONFIG.OFFICIALS.SK_EXECUTIVE.map((official) => ({
         role: official.role as Role,
-        name: official.name,
-        image: official.image,
+        name: '',
+        image: null,
       })),
     )
     setSkKagawads([{ role: 'SK Kagawad' as Role, name: '', image: null }])
@@ -96,11 +96,11 @@ export function useBarangayOfficialForm({
     const errors: string[] = []
 
     const checkOfficials = (officials: BlogTypedef[], roleName: string) => {
-      officials.forEach((official, index) => {
+      officials.forEach((official) => {
         if (!official.name)
-          errors.push(`${roleName} #${index + 1} name is required`)
+          errors.push(`${roleName} ${official.role} name is required`)
         if (!official.image)
-          errors.push(`${roleName} #${index + 1} image is required`)
+          errors.push(`${roleName} ${official.role} image is required`)
       })
     }
 
@@ -116,7 +116,10 @@ export function useBarangayOfficialForm({
     if (!termsAccepted) errors.push('You must accept the terms and conditions')
 
     if (errors.length > 0) {
-      toast.error(errors[0], { duration: 3000 })
+      toast.error(errors[0], {
+        description: new Date().toLocaleString(),
+        action: { label: 'Undo', onClick: () => console.log('Undo') },
+      })
     } else {
       console.log(
         'Form submitted with the following data:',

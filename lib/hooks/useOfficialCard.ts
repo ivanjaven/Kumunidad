@@ -12,7 +12,7 @@ export function useOfficialCard(
         reader.onload = (e) => {
           setOfficials((prev) =>
             prev.map((official, i) =>
-              i === index
+              i === index || official.role === role
                 ? { ...official, image: e.target?.result as string }
                 : official,
             ),
@@ -29,7 +29,9 @@ export function useOfficialCard(
       if (setOfficials) {
         setOfficials((prev) =>
           prev.map((official, i) =>
-            i === index ? { ...official, name } : official,
+            i === index || official.role === role
+              ? { ...official, name }
+              : official,
           ),
         )
       }

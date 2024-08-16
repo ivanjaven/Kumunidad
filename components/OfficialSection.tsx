@@ -30,7 +30,7 @@ export function OfficialSection({
             key={`${official.role}-${index}`}
             official={official}
             index={index}
-            setOfficials={setOfficials}
+            setOfficials={setOfficials!}
           />
         ))}
         {addNewRole && setOfficials && (

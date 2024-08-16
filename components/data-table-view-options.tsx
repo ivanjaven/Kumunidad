@@ -25,7 +25,10 @@ export function DataTableViewOptions<TData>({
   const handlePrint = () => {
     const selectedRows = table.getFilteredSelectedRowModel().rows
     if (selectedRows.length === 0) {
-      toast.error('Please select at least one row to print.')
+      toast.error('Please select at least one row to print', {
+        description: new Date().toLocaleString(),
+        action: { label: 'Undo', onClick: () => console.log('Undo') },
+      })
       return
     }
 

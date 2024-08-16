@@ -59,7 +59,13 @@ export default function RegistrationPage() {
         const data = await fetchMetadata()
         setMetadata(data)
       } catch (error) {
-        toast.error('Error fetching dropdown options. Please try again later.')
+        toast.error(
+          'Error fetching dropdown options. Please try again later.',
+          {
+            description: new Date().toLocaleString(),
+            action: { label: 'Undo', onClick: () => console.log('Undo') },
+          },
+        )
       }
     }
 
@@ -108,7 +114,10 @@ export default function RegistrationPage() {
           handleSubmitSuccess()
         } catch (error) {
           console.error('Registration failed:', error)
-          toast.error('Registration failed. Please try again.')
+          toast.error('Registration failed. Please try again', {
+            description: new Date().toLocaleString(),
+            action: { label: 'Undo', onClick: () => console.log('Undo') },
+          })
         } finally {
           setIsSubmitting(false)
         }

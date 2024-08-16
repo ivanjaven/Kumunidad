@@ -2,15 +2,13 @@ import React, { useRef } from 'react'
 import Image from 'next/image'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { UserIcon, Camera, X } from 'lucide-react'
-import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
+import { UserIcon, Camera } from 'lucide-react'
 import { BlogTypedef } from '@/lib/typedef/blog-typedef'
-import { useOfficialCard } from '@/lib/hooks/useOfficialCard'
 
 interface OfficialCardProps {
   official: BlogTypedef
   index: number
-  setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>> | null
+  setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>>
 }
 
 export function OfficialCard({
@@ -19,21 +17,32 @@ export function OfficialCard({
   setOfficials,
 }: OfficialCardProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const { handleImageUpload, handleNameChange, removeOfficial } =
-    useOfficialCard(setOfficials)
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setOfficials((prev) =>
+          prev.map((off, i) =>
+            i === index ? { ...off, image: e.target?.result as string } : off,
+          ),
+        )
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setOfficials((prev) =>
+      prev.map((off, i) =>
+        i === index ? { ...off, name: event.target.value } : off,
+      ),
+    )
+  }
 
   return (
     <Card className="relative overflow-hidden">
-      {BLOG_CONFIG.ADDITIONAL_ROLES.some(
-        (role) => role.role === official.role,
-      ) && (
-        <button
-          className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center bg-gray-100/80 hover:bg-gray-100"
-          onClick={() => removeOfficial(official.role, index)}
-        >
-          <X size={16} />
-        </button>
-      )}
       <div
         className="relative h-48 cursor-pointer"
         onClick={() => fileInputRef.current?.click()}
@@ -58,9 +67,7 @@ export function OfficialCard({
         <Input
           placeholder={official.role}
           value={official.name}
-          onChange={(e) =>
-            handleNameChange(official.role, index, e.target.value)
-          }
+          onChange={handleNameChange}
           className="mb-2"
         />
       </CardContent>
@@ -69,7 +76,7 @@ export function OfficialCard({
         accept="image/*"
         className="hidden"
         ref={fileInputRef}
-        onChange={(e) => handleImageUpload(official.role, index, e)}
+        onChange={handleImageUpload}
       />
     </Card>
   )

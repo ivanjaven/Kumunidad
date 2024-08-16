@@ -1,12 +1,20 @@
 import React, { useCallback } from 'react'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
 import { OfficialSection } from './OfficialSection'
-import { TermInfo } from './TermInfo'
 import { useBarangayOfficialForm } from '@/lib/hooks/useBarangayOfficialForm'
 
+// Interface for the BarangayOfficialForm component props
 interface BarangayOfficialFormProps {
   officials: BlogTypedef[]
   kagawads: BlogTypedef[]
@@ -29,6 +37,7 @@ interface BarangayOfficialFormProps {
   closeDialog: () => void
 }
 
+// BarangayOfficialForm component
 export function BarangayOfficialForm({
   officials,
   kagawads,
@@ -50,6 +59,7 @@ export function BarangayOfficialForm({
   setTermsAccepted,
   closeDialog,
 }: BarangayOfficialFormProps) {
+  // Custom hook for form submission and clearing
   const { handleSubmit, handleClear } = useBarangayOfficialForm({
     officials,
     kagawads,
@@ -72,41 +82,43 @@ export function BarangayOfficialForm({
     closeDialog,
   })
 
+  // Function to render each section of the form
   const renderSection = useCallback(
     (title: string, key: string, infoText: string) => {
       let officialsToRender: BlogTypedef[] = []
-      let setOfficials: React.Dispatch<
+      let setOfficialsFn: React.Dispatch<
         React.SetStateAction<BlogTypedef[]>
       > | null = null
       let addNewRole: Role | null = null
 
+      // Determine which officials and setter function to use based on the section key
       switch (key) {
         case 'EXECUTIVE':
           officialsToRender = officials
-          setOfficials = setOfficials
+          setOfficialsFn = setOfficials
           break
         case 'BARANGAY_KAGAWAD':
           officialsToRender = kagawads
-          setOfficials = setKagawads
+          setOfficialsFn = setKagawads
           addNewRole = 'Barangay Kagawad'
           break
         case 'LUPONG_TAGAPAMAYAPA':
           officialsToRender = lupons
-          setOfficials = setLupons
+          setOfficialsFn = setLupons
           addNewRole = 'Lupong Tagapamayapa'
           break
         case 'SK_EXECUTIVE':
           officialsToRender = skOfficials
-          setOfficials = setSkOfficials
+          setOfficialsFn = setSkOfficials
           break
         case 'SK_KAGAWAD':
           officialsToRender = skKagawads
-          setOfficials = setSkKagawads
+          setOfficialsFn = setSkKagawads
           addNewRole = 'SK Kagawad'
           break
         case 'BARANGAY_TANOD':
           officialsToRender = tanods
-          setOfficials = setTanods
+          setOfficialsFn = setTanods
           addNewRole = 'Barangay Tanod'
           break
       }
@@ -117,7 +129,7 @@ export function BarangayOfficialForm({
           title={title}
           infoText={infoText}
           officials={officialsToRender}
-          setOfficials={setOfficials}
+          setOfficials={setOfficialsFn}
           addNewRole={addNewRole}
         />
       )
@@ -129,12 +141,83 @@ export function BarangayOfficialForm({
       skOfficials,
       skKagawads,
       tanods,
+      setOfficials,
       setKagawads,
       setLupons,
       setSkOfficials,
       setSkKagawads,
       setTanods,
     ],
+  )
+
+  // Function to render the TermInfo section
+  const renderTermInfo = () => (
+    <div className="mb-8 flex flex-col gap-8">
+      <div className="w-full">
+        <p className="mb-6 text-gray-700">{BLOG_CONFIG.TERM_INFO_TEXT}</p>
+      </div>
+      <div className="flex flex-col gap-6 md:flex-row">
+        <div className="w-full md:w-1/2">
+          <Label
+            htmlFor="startYear"
+            className="text-sm font-medium text-gray-900"
+          >
+            Starting Year
+          </Label>
+          <Input
+            id="startYear"
+            value={startYear}
+            onChange={(e) => setStartYear(e.target.value)}
+            placeholder="Enter starting year"
+            className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div className="w-full md:w-1/2">
+          <Label
+            htmlFor="endYear"
+            className="text-sm font-medium text-gray-900"
+          >
+            Ending Year
+          </Label>
+          <Input
+            id="endYear"
+            value={endYear}
+            onChange={(e) => setEndYear(e.target.value)}
+            placeholder="Enter ending year"
+            className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+      <div className="mt-6 flex items-center">
+        <Checkbox
+          id="terms"
+          className="mr-2"
+          checked={termsAccepted}
+          onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+        />
+        <Label
+          htmlFor="terms"
+          className="flex items-center space-x-1 text-sm font-medium text-gray-700"
+        >
+          <span>{BLOG_CONFIG.TERMS_AND_CONDITIONS.TEXT}</span>
+          <HoverCard>
+            <HoverCardTrigger>
+              <p className="cursor-pointer text-blue-500 underline">
+                {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
+              </p>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-80 p-4">
+              <h3 className="text-lg font-semibold">
+                {BLOG_CONFIG.TERMS_AND_CONDITIONS.LINK_TEXT}
+              </h3>
+              <p className="mt-2 text-sm text-gray-600">
+                {BLOG_CONFIG.TERMS_AND_CONDITIONS.CONTENT}
+              </p>
+            </HoverCardContent>
+          </HoverCard>
+        </Label>
+      </div>
+    </div>
   )
 
   return (
@@ -150,14 +233,7 @@ export function BarangayOfficialForm({
         ))}
       </div>
       <Separator className="my-12" />
-      <TermInfo
-        startYear={startYear}
-        endYear={endYear}
-        termsAccepted={termsAccepted}
-        setStartYear={setStartYear}
-        setEndYear={setEndYear}
-        setTermsAccepted={setTermsAccepted}
-      />
+      {renderTermInfo()}
       <div className="flex justify-end gap-4 p-6">
         <Button variant="outline" onClick={handleClear}>
           Reset
