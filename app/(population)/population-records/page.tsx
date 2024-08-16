@@ -7,7 +7,6 @@ import { fetchPopulationList } from '@/server/queries/fetch-population-list'
 import { PopulationTypedef } from '@/lib/typedef/population-typedef'
 import { z } from 'zod'
 import { DataTableSkeleton } from '@/components/data-table-skeleton'
-import { Toaster } from '@/components/ui/sonner'
 
 type PopulationData = z.infer<typeof PopulationTypedef>
 
@@ -35,7 +34,6 @@ export default function PopulationPage() {
 
   return (
     <>
-      <Toaster />
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
           <div className="flex items-center justify-between space-y-2">

@@ -20,7 +20,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main>{children}</main>
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            classNames: {
+              toast:
+                'group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg group-[.toaster]:pointer-events-auto',
+            },
+          }}
+        />
       </body>
     </html>
   )
