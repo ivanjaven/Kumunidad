@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
+import { BlogCustomForm } from './blog-custom-form'
+import { useBarangayOfficials } from '@/lib/hooks/useBarangayOfficials'
 import {
   Dialog,
   DialogContent,
@@ -9,10 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { BarangayOfficialForm } from './BarangayOfficialForm'
-import { useBarangayOfficials } from '@/lib/hooks/useBarangayOfficials'
 
-export default function BarangayInformationPage() {
+export function BlogCustomFormDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const {
     officials,
@@ -96,7 +96,7 @@ export default function BarangayInformationPage() {
           <DialogHeader>
             <DialogTitle>Barangay Officials</DialogTitle>
           </DialogHeader>
-          <BarangayOfficialForm
+          <BlogCustomForm
             officials={officials}
             kagawads={kagawads}
             lupons={lupons}

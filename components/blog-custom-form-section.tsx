@@ -1,7 +1,7 @@
 import React from 'react'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
-import { OfficialCard } from './OfficialCard'
-import { AddNewCard } from './AddNewCard'
+import { BlogCustomFormField } from './blog-custom-form-field'
+import { BlogCustomFormCardPlaceholder } from '@/components/blog-custom-form-card-placeholder'
 
 interface OfficialSectionProps {
   title: string
@@ -11,7 +11,7 @@ interface OfficialSectionProps {
   addNewRole: Role | null
 }
 
-export function OfficialSection({
+export function BlogCustomFormSection({
   title,
   infoText,
   officials,
@@ -26,7 +26,7 @@ export function OfficialSection({
       </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
         {officials.map((official, index) => (
-          <OfficialCard
+          <BlogCustomFormField
             key={`${official.role}-${index}`}
             official={official}
             index={index}
@@ -34,7 +34,10 @@ export function OfficialSection({
           />
         ))}
         {addNewRole && setOfficials && (
-          <AddNewCard role={addNewRole} setOfficials={setOfficials} />
+          <BlogCustomFormCardPlaceholder
+            role={addNewRole}
+            setOfficials={setOfficials}
+          />
         )}
       </div>
     </div>

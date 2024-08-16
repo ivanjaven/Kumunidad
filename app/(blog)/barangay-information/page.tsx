@@ -1,8 +1,9 @@
-import BarangayInformationPage from '@/components/blog-new-post'
+import { BlogCustomFormDialog } from '@/components/blog-custom-form-dialog'
+
 export default function Home() {
   return (
     <main>
-      <BarangayInformationPage />
+      <BlogCustomFormDialog />
     </main>
   )
 }
