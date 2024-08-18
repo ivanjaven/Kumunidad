@@ -1,9 +1,9 @@
-import { BlogCustomFormDialog } from '@/components/blog-custom-form-dialog'
+import { BlogDialogForm } from '@/components/blog-dialog-form'
 
 export default function Home() {
   return (
     <main>
-      <BlogCustomFormDialog />
+      <BlogDialogForm />
     </main>
   )
 }

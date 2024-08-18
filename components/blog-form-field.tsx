@@ -11,7 +11,7 @@ interface OfficialCardProps {
   setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>>
 }
 
-export function BlogCustomFormField({
+export function BlogFormField({
   official,
   index,
   setOfficials,

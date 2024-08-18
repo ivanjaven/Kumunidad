@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-export function BlogCustomFormDialog() {
+export function BlogDialogForm() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const {
     officials,
@@ -87,38 +87,36 @@ export function BlogCustomFormDialog() {
   ])
 
   return (
-    <>
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTrigger asChild>
-          <Button>Manage Barangay Officials</Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-6xl">
-          <DialogHeader>
-            <DialogTitle>Barangay Officials</DialogTitle>
-          </DialogHeader>
-          <BlogCustomForm
-            officials={officials}
-            kagawads={kagawads}
-            lupons={lupons}
-            tanods={tanods}
-            skOfficials={skOfficials}
-            skKagawads={skKagawads}
-            startYear={startYear}
-            endYear={endYear}
-            termsAccepted={termsAccepted}
-            setOfficials={setOfficials}
-            setKagawads={setKagawads}
-            setLupons={setLupons}
-            setTanods={setTanods}
-            setSkOfficials={setSkOfficials}
-            setSkKagawads={setSkKagawads}
-            setStartYear={setStartYear}
-            setEndYear={setEndYear}
-            setTermsAccepted={setTermsAccepted}
-            closeDialog={() => setIsDialogOpen(false)}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogTrigger asChild>
+        <Button>Manage Barangay Officials</Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-6xl">
+        <DialogHeader>
+          <DialogTitle>Barangay Officials</DialogTitle>
+        </DialogHeader>
+        <BlogCustomForm
+          officials={officials}
+          kagawads={kagawads}
+          lupons={lupons}
+          tanods={tanods}
+          skOfficials={skOfficials}
+          skKagawads={skKagawads}
+          startYear={startYear}
+          endYear={endYear}
+          termsAccepted={termsAccepted}
+          setOfficials={setOfficials}
+          setKagawads={setKagawads}
+          setLupons={setLupons}
+          setTanods={setTanods}
+          setSkOfficials={setSkOfficials}
+          setSkKagawads={setSkKagawads}
+          setStartYear={setStartYear}
+          setEndYear={setEndYear}
+          setTermsAccepted={setTermsAccepted}
+          closeDialog={() => setIsDialogOpen(false)}
+        />
+      </DialogContent>
+    </Dialog>
   )
 }

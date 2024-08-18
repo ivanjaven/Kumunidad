@@ -1,9 +1,8 @@
-import React from 'react'
+import { BlogAddCard } from '@/components/blog-add-card'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
-import { BlogCustomFormField } from './blog-custom-form-field'
-import { BlogCustomFormCardPlaceholder } from '@/components/blog-custom-form-card-placeholder'
+import { BlogFormField } from '@/components/blog-form-field'
 
-interface OfficialSectionProps {
+interface BlogCustomFormSectionProps {
   title: string
   infoText: string
   officials: BlogTypedef[]
@@ -17,7 +16,7 @@ export function BlogCustomFormSection({
   officials,
   setOfficials,
   addNewRole,
-}: OfficialSectionProps) {
+}: BlogCustomFormSectionProps) {
   return (
     <div>
       <h2 className="mb-6 text-2xl font-semibold text-gray-800">{title}</h2>
@@ -26,7 +25,7 @@ export function BlogCustomFormSection({
       </div>
       <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
         {officials.map((official, index) => (
-          <BlogCustomFormField
+          <BlogFormField
             key={`${official.role}-${index}`}
             official={official}
             index={index}
@@ -34,10 +33,7 @@ export function BlogCustomFormSection({
           />
         ))}
         {addNewRole && setOfficials && (
-          <BlogCustomFormCardPlaceholder
-            role={addNewRole}
-            setOfficials={setOfficials}
-          />
+          <BlogAddCard role={addNewRole} setOfficials={setOfficials} />
         )}
       </div>
     </div>

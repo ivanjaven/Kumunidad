@@ -1,17 +1,14 @@
 import React from 'react'
-import { Card, CardContent } from '@/components/ui/card'
 import { PlusIcon } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
 import { Role, BlogTypedef } from '@/lib/typedef/blog-typedef'
 
-interface BlogCustomFormCardProps {
+interface BlogAddCardProps {
   role: Role
   setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>>
 }
 
-export function BlogCustomFormCardPlaceholder({
-  role,
-  setOfficials,
-}: BlogCustomFormCardProps) {
+export function BlogAddCard({ role, setOfficials }: BlogAddCardProps) {
   const addOfficial = () => {
     const newOfficial: BlogTypedef = { role, name: '', image: null }
     setOfficials((prev) => [...prev, newOfficial])
