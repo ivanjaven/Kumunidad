@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { BlogCustomForm } from './blog-custom-form'
+import { BlogCustomForm } from '@/components/blog-custom-form'
 import { useBarangayOfficials } from '@/lib/hooks/useBarangayOfficials'
 import {
   Dialog,

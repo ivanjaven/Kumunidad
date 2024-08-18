@@ -8,8 +8,7 @@ interface BlogFormSectionProps {
   title: string
   infoText: string
   officials: BlogTypedef[]
-  setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>> | null
-  addNewRole: Role | null
+  setOfficials: React.Dispatch<React.SetStateAction<BlogTypedef[]>>
   sectionKey: string
 }
 
@@ -18,11 +17,10 @@ export function BlogFormSection({
   infoText,
   officials,
   setOfficials,
-  addNewRole,
   sectionKey,
 }: BlogFormSectionProps) {
   const removeOfficial = (index: number) => {
-    setOfficials?.((prev) => prev.filter((_, i) => i !== index))
+    setOfficials((prev) => prev.filter((_, i) => i !== index))
   }
 
   const isExecutiveSection =
@@ -37,6 +35,23 @@ export function BlogFormSection({
     'SK Treasurer',
   ]
 
+  const getAddNewRole = (): Role | null => {
+    switch (sectionKey) {
+      case 'BARANGAY_KAGAWAD':
+        return 'Barangay Kagawad'
+      case 'LUPONG_TAGAPAMAYAPA':
+        return 'Lupong Tagapamayapa'
+      case 'SK_KAGAWAD':
+        return 'SK Kagawad'
+      case 'BARANGAY_TANOD':
+        return 'Barangay Tanod'
+      default:
+        return null
+    }
+  }
+
+  const addNewRole = getAddNewRole()
+
   return (
     <div>
       <h2 className="mb-6 text-2xl font-semibold text-gray-800">{title}</h2>
@@ -49,12 +64,11 @@ export function BlogFormSection({
             <BlogFormField
               official={official}
               index={index}
-              setOfficials={setOfficials!}
+              setOfficials={setOfficials}
             />
             {!isExecutiveSection &&
               index !== 0 &&
-              !rolesWithoutRemoveButton.includes(official.role) &&
-              setOfficials && (
+              !rolesWithoutRemoveButton.includes(official.role) && (
                 <button
                   className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
                   onClick={() => removeOfficial(index)}
@@ -64,7 +78,7 @@ export function BlogFormSection({
               )}
           </div>
         ))}
-        {addNewRole && setOfficials && (
+        {addNewRole && (
           <BlogAddCard role={addNewRole} setOfficials={setOfficials} />
         )}
       </div>

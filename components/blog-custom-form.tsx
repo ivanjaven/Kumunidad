@@ -6,12 +6,12 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 import { useBarangayOfficialForm } from '@/lib/hooks/useBarangayOfficialForm'
 import { BlogFormTypedef } from '@/lib/typedef/blog-form-typedef'
+import { BlogFormSection } from '@/components/blog-custom-form-section'
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
-import { BlogCustomFormSectionWrapper } from '@/components/blog-custom-form-section-wrapper'
 
 export function BlogCustomForm({
   officials,
@@ -61,22 +61,36 @@ export function BlogCustomForm({
       <div className="space-y-12">
         {BLOG_CONFIG.SECTIONS.map((section, index) => (
           <div key={section.key}>
-            <BlogCustomFormSectionWrapper
-              officials={officials}
-              kagawads={kagawads}
-              lupons={lupons}
-              skOfficials={skOfficials}
-              skKagawads={skKagawads}
-              tanods={tanods}
-              setOfficials={setOfficials}
-              setKagawads={setKagawads}
-              setLupons={setLupons}
-              setSkOfficials={setSkOfficials}
-              setSkKagawads={setSkKagawads}
-              setTanods={setTanods}
+            <BlogFormSection
               title={section.title}
-              sectionKey={section.key}
               infoText={section.infoText}
+              officials={
+                section.key === 'EXECUTIVE'
+                  ? officials
+                  : section.key === 'BARANGAY_KAGAWAD'
+                    ? kagawads
+                    : section.key === 'LUPONG_TAGAPAMAYAPA'
+                      ? lupons
+                      : section.key === 'SK_EXECUTIVE'
+                        ? skOfficials
+                        : section.key === 'SK_KAGAWAD'
+                          ? skKagawads
+                          : tanods
+              }
+              setOfficials={
+                section.key === 'EXECUTIVE'
+                  ? setOfficials
+                  : section.key === 'BARANGAY_KAGAWAD'
+                    ? setKagawads
+                    : section.key === 'LUPONG_TAGAPAMAYAPA'
+                      ? setLupons
+                      : section.key === 'SK_EXECUTIVE'
+                        ? setSkOfficials
+                        : section.key === 'SK_KAGAWAD'
+                          ? setSkKagawads
+                          : setTanods
+              }
+              sectionKey={section.key}
             />
             {index < BLOG_CONFIG.SECTIONS.length - 1 && (
               <Separator className="my-12" />
@@ -84,6 +98,7 @@ export function BlogCustomForm({
           </div>
         ))}
       </div>
+      {/* Rest of the component remains the same */}
       <Separator className="my-12" />
       <div className="mb-8 flex flex-col gap-8">
         <div className="w-full">
