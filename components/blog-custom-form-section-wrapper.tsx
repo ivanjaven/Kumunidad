@@ -1,6 +1,6 @@
 import React from 'react'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
-import { BlogCustomFormSection } from './blog-custom-form-section'
+import { BlogFormSection } from './blog-custom-form-section'
 
 interface BlogCustomFormSectionProps {
   officials: BlogTypedef[]
@@ -77,12 +77,13 @@ export const BlogCustomFormSectionWrapper: React.FC<
   }
 
   return (
-    <BlogCustomFormSection
+    <BlogFormSection
       title={title}
       infoText={infoText}
       officials={officialsToRender}
       setOfficials={setOfficialsFn}
       addNewRole={addNewRole}
+      sectionKey={''}
     />
   )
 }
