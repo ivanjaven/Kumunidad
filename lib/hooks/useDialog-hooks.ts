@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 
-export function useBarangayOfficials() {
+export function useDialogHooks() {
   const [officials, setOfficials] = useState<BlogTypedef[]>(() =>
     BLOG_CONFIG.OFFICIALS.EXECUTIVE.map((official) => ({
       role: official.role as Role,

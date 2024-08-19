@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { BlogCustomForm } from '@/components/blog-custom-form'
-import { useBarangayOfficials } from '@/lib/hooks/useBarangayOfficials'
+import { useDialogHooks } from '@/lib/hooks/useDialog-hooks'
 import {
   Dialog,
   DialogContent,
@@ -33,8 +33,9 @@ export function BlogDialogForm() {
     setStartYear,
     setEndYear,
     setTermsAccepted,
-  } = useBarangayOfficials()
+  } = useDialogHooks()
 
+  // Load data from local storage on component mount
   useEffect(() => {
     const savedData = localStorage.getItem('barangayOfficials')
     if (savedData) {
@@ -61,6 +62,7 @@ export function BlogDialogForm() {
     setTermsAccepted,
   ])
 
+  // Save data to local storage whenever state changes
   useEffect(() => {
     const dataToSave = {
       officials,
@@ -96,25 +98,25 @@ export function BlogDialogForm() {
           <DialogTitle>Barangay Officials</DialogTitle>
         </DialogHeader>
         <BlogCustomForm
-          officials={officials}
-          kagawads={kagawads}
-          lupons={lupons}
-          tanods={tanods}
-          skOfficials={skOfficials}
-          skKagawads={skKagawads}
-          startYear={startYear}
-          endYear={endYear}
-          termsAccepted={termsAccepted}
-          setOfficials={setOfficials}
-          setKagawads={setKagawads}
-          setLupons={setLupons}
-          setTanods={setTanods}
-          setSkOfficials={setSkOfficials}
-          setSkKagawads={setSkKagawads}
-          setStartYear={setStartYear}
-          setEndYear={setEndYear}
-          setTermsAccepted={setTermsAccepted}
-          closeDialog={() => setIsDialogOpen(false)}
+          stateForBarangayExecutiveOfficials={officials}
+          stateForBarangaykagawads={kagawads}
+          stateForBarangayLupongTagapamayapa={lupons}
+          stateForSKExecutiveOfficials={skOfficials}
+          stateForSKkagawads={skKagawads}
+          stateForBarangayTanod={tanods}
+          stateForStartingYear={startYear}
+          stateForEndingYear={endYear}
+          stateForTermsAndConditionsAccepted={termsAccepted}
+          setBarangayExecutiveOfficials={setOfficials}
+          setBarangaykagawads={setKagawads}
+          setBarangayLupongTagapamayapa={setLupons}
+          setSKExecutiveOfficials={setSkOfficials}
+          setSKkagawads={setSkKagawads}
+          setBarangayTanod={setTanods}
+          setStartingYear={setStartYear}
+          setEndingYear={setEndYear}
+          setTermsAndConditionsAccepted={setTermsAccepted}
+          setCloseDialog={() => setIsDialogOpen(false)}
         />
       </DialogContent>
     </Dialog>

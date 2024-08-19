@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { Checkbox } from '@/components/ui/checkbox'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
-import { useBarangayOfficialForm } from '@/lib/hooks/useBarangayOfficialForm'
-import { BlogFormTypedef } from '@/lib/typedef/blog-form-typedef'
+import { useFormHooks } from '@/lib/hooks/useForm-hooks'
+import { BlogStateTypedef } from '@/lib/typedef/blog-state-typedef'
 import { BlogFormSection } from '@/components/blog-custom-form-section'
 import {
   HoverCard,
@@ -14,46 +14,49 @@ import {
 } from '@/components/ui/hover-card'
 
 export function BlogCustomForm({
-  officials,
-  kagawads,
-  lupons,
-  tanods,
-  skOfficials,
-  skKagawads,
-  startYear,
-  endYear,
-  termsAccepted,
-  setOfficials,
-  setKagawads,
-  setLupons,
-  setTanods,
-  setSkOfficials,
-  setSkKagawads,
-  setStartYear,
-  setEndYear,
-  setTermsAccepted,
-  closeDialog,
-}: BlogFormTypedef) {
-  const { handleSubmit, handleClear } = useBarangayOfficialForm({
-    officials,
-    kagawads,
-    lupons,
-    tanods,
-    skOfficials,
-    skKagawads,
-    startYear,
-    endYear,
-    termsAccepted,
-    setOfficials,
-    setKagawads,
-    setLupons,
-    setTanods,
-    setSkOfficials,
-    setSkKagawads,
-    setStartYear,
-    setEndYear,
-    setTermsAccepted,
-    closeDialog,
+  // State variables
+  stateForBarangayExecutiveOfficials,
+  stateForBarangaykagawads,
+  stateForBarangayLupongTagapamayapa,
+  stateForSKExecutiveOfficials,
+  stateForSKkagawads,
+  stateForBarangayTanod,
+  stateForStartingYear,
+  stateForEndingYear,
+  stateForTermsAndConditionsAccepted,
+
+  // Setter functions
+  setBarangayExecutiveOfficials,
+  setBarangaykagawads,
+  setBarangayLupongTagapamayapa,
+  setSKExecutiveOfficials,
+  setSKkagawads,
+  setBarangayTanod,
+  setStartingYear,
+  setEndingYear,
+  setTermsAndConditionsAccepted,
+  setCloseDialog,
+}: BlogStateTypedef) {
+  const { handleSubmit, handleReset } = useFormHooks({
+    stateForBarangayExecutiveOfficials,
+    stateForBarangaykagawads,
+    stateForBarangayLupongTagapamayapa,
+    stateForSKExecutiveOfficials,
+    stateForSKkagawads,
+    stateForBarangayTanod,
+    stateForStartingYear,
+    stateForEndingYear,
+    stateForTermsAndConditionsAccepted,
+    setBarangayExecutiveOfficials,
+    setBarangaykagawads,
+    setBarangayLupongTagapamayapa,
+    setSKExecutiveOfficials,
+    setSKkagawads,
+    setBarangayTanod,
+    setStartingYear,
+    setEndingYear,
+    setTermsAndConditionsAccepted,
+    setCloseDialog,
   })
 
   return (
@@ -66,29 +69,29 @@ export function BlogCustomForm({
               infoText={section.infoText}
               officials={
                 section.key === 'EXECUTIVE'
-                  ? officials
+                  ? stateForBarangayExecutiveOfficials
                   : section.key === 'BARANGAY_KAGAWAD'
-                    ? kagawads
+                    ? stateForBarangaykagawads
                     : section.key === 'LUPONG_TAGAPAMAYAPA'
-                      ? lupons
+                      ? stateForBarangayLupongTagapamayapa
                       : section.key === 'SK_EXECUTIVE'
-                        ? skOfficials
+                        ? stateForSKExecutiveOfficials
                         : section.key === 'SK_KAGAWAD'
-                          ? skKagawads
-                          : tanods
+                          ? stateForSKkagawads
+                          : stateForBarangayTanod
               }
               setOfficials={
                 section.key === 'EXECUTIVE'
-                  ? setOfficials
+                  ? setBarangayExecutiveOfficials
                   : section.key === 'BARANGAY_KAGAWAD'
-                    ? setKagawads
+                    ? setBarangaykagawads
                     : section.key === 'LUPONG_TAGAPAMAYAPA'
-                      ? setLupons
+                      ? setBarangayLupongTagapamayapa
                       : section.key === 'SK_EXECUTIVE'
-                        ? setSkOfficials
+                        ? setSKExecutiveOfficials
                         : section.key === 'SK_KAGAWAD'
-                          ? setSkKagawads
-                          : setTanods
+                          ? setSKkagawads
+                          : setBarangayTanod
               }
               sectionKey={section.key}
             />
@@ -98,7 +101,6 @@ export function BlogCustomForm({
           </div>
         ))}
       </div>
-      {/* Rest of the component remains the same */}
       <Separator className="my-12" />
       <div className="mb-8 flex flex-col gap-8">
         <div className="w-full">
@@ -114,8 +116,8 @@ export function BlogCustomForm({
             </Label>
             <Input
               id="startYear"
-              value={startYear}
-              onChange={(e) => setStartYear(e.target.value)}
+              value={stateForStartingYear}
+              onChange={(e) => setStartingYear(e.target.value)}
               placeholder="Enter starting year"
               className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
@@ -129,8 +131,8 @@ export function BlogCustomForm({
             </Label>
             <Input
               id="endYear"
-              value={endYear}
-              onChange={(e) => setEndYear(e.target.value)}
+              value={stateForEndingYear}
+              onChange={(e) => setEndingYear(e.target.value)}
               placeholder="Enter ending year"
               className="mt-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-blue-500"
             />
@@ -140,8 +142,10 @@ export function BlogCustomForm({
           <Checkbox
             id="terms"
             className="mr-2"
-            checked={termsAccepted}
-            onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
+            checked={stateForTermsAndConditionsAccepted}
+            onCheckedChange={(checked) =>
+              setTermsAndConditionsAccepted(checked as boolean)
+            }
           />
           <Label
             htmlFor="terms"
@@ -167,7 +171,7 @@ export function BlogCustomForm({
         </div>
       </div>
       <div className="flex justify-end gap-4 p-6">
-        <Button variant="outline" onClick={handleClear}>
+        <Button variant="outline" onClick={handleReset}>
           Reset
         </Button>
         <Button onClick={handleSubmit}>Save</Button>
