@@ -1,19 +1,23 @@
 {
   "extends": "next/core-web-vitals", // Extends ESLint's recommended rule set.
-  "rules": {                         // Rules configurations:
-    "eqeqeq": "error",               // Requires using strict equality (=== and !==).
-    "consistent-return": "error",    // Requires a return statement in function bodies.
-    "linebreak-style": [             // Enforces consistent linebreak style.
-      "error",                       // Indicates that this rule should be enforced as an error.
-      "unix"                         // Specifies LF line endings (Unix-style)
+  "rules": {
+    // Rules configurations:
+    "eqeqeq": "error", // Requires using strict equality (=== and !==).
+    "consistent-return": "error", // Requires a return statement in function bodies.
+    "linebreak-style": [
+      // Enforces consistent linebreak style.
+      "error", // Indicates that this rule should be enforced as an error.
+      "windows" // Specifies LF line endings (Unix-style)
     ],
-    "quotes": [                      // Enforces consistent use of single quotes.
-      "error",                       // Indicates that this rule should be enforced as an error.
-      "single"                       // Specifies single quotes.
+    "quotes": [
+      // Enforces consistent use of single quotes.
+      "error", // Indicates that this rule should be enforced as an error.
+      "single" // Specifies single quotes.
     ],
-    "semi": [                        // Requires or disallows semicolons at the end of statements.
-      "error",                       // Indicates that this rule should be enforced as an error.
-      "never"                        // Specifies that semicolons should never be used.
+    "semi": [
+      // Requires or disallows semicolons at the end of statements.
+      "error", // Indicates that this rule should be enforced as an error.
+      "never" // Specifies that semicolons should never be used.
     ]
   }
 }

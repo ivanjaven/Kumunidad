@@ -1,5 +1,5 @@
 INSERT INTO residents (resident_id, full_name, first_name, last_name, middle_name, gender, image_base64, fingerprint_base64, date_of_birth, civil_status, occupation_id, nationality_id, religion_id, benefit_id, is_archived)
-VALUES 
+VALUES
 (2, 'John Smith Doe', 'John', 'Doe', 'Smith', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '1960-01-01', 'Married', 1, 2, 2, 1, FALSE),
 (3, 'Jane Ann Smith', 'Jane', 'Smith', 'Ann', 'Female', 'base64encodedimage', 'base64encodedfingerprint', '1985-05-15', 'Married', 2, 2, 2, 2, FALSE),
 (4, 'Mike Paul Johnson', 'Mike', 'Johnson', 'Paul', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '2010-11-30', 'Single', 1, 2, 2, 1, FALSE),
@@ -101,7 +101,7 @@ VALUES
 (100, 'Mark Michael Henderson', 'Mark', 'Henderson', 'Michael', 'Male', 'base64encodedimage', 'base64encodedfingerprint', '1980-02-08', 'Married', 1, 2, 2, 1, FALSE);
 
 INSERT INTO contacts (resident_id, email, mobile)
-VALUES 
+VALUES
 (2, 'JohnSmith@example.com', '1234567890'),
 (3, 'JaneDoe@example.com', '1234567890'),
 (4, 'RobertJohnson@example.com', '1234567890'),
@@ -204,7 +204,7 @@ VALUES
 
 
 INSERT INTO addresses (resident_id, house_number, street_id, barangay_id, municipality_id, province_id, postal_code)
-VALUES 
+VALUES
 (2, '123', FLOOR(RAND() * 6) + 1, 1, 1, 1, '12345'),
 (3, '123', FLOOR(RAND() * 6) + 1, 1, 1, 1, '12345'),
 (4, '123', FLOOR(RAND() * 6) + 1, 1, 1, 1, '12345'),

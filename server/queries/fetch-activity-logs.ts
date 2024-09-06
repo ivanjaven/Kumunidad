@@ -5,7 +5,7 @@ export async function fetchActivityLogs(
   limit: number = 25,
 ): Promise<{ data: ActivityLogsTypedef[] }> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL
-  const endpoint = '/api/logs'
+  const endpoint = '/api/logs/activity'
 
   try {
     const response = await fetch(
