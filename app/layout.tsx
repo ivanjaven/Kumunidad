@@ -3,7 +3,7 @@ import { Toaster } from '@/components/ui/sonner'
 
 import { Inter } from 'next/font/google'
 import '@/styles/globals.css'
-
+import { cn } from '@/lib/utils'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -18,7 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={cn(
+          'min-h-screen w-full bg-background font-sans text-base antialiased',
+          'flex flex-col',
+          'overflow-x-hidden',
+          'text-foreground',
+          'leading-normal',
+          inter.className,
+        )}
+      >
         <main>{children}</main>
         <Toaster
           toastOptions={{
