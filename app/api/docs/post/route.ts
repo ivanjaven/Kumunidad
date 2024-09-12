@@ -38,17 +38,17 @@ export async function POST(request: NextRequest) {
       return APIResponse({ error: 'All required parameters are needed' }, 400)
     }
 
-    // Validate document_title enum
-    const validDocumentTitles = [
-      'Barangay Business Clearance',
-      'Barangay Clearance',
-      'Certificate of Indigency',
-      'Certificate of Residency',
-    ]
-    if (!validDocumentTitles.includes(document_title)) {
-      console.log('Validation failed: invalid document_title')
-      return APIResponse({ error: 'Invalid document_title' }, 400)
-    }
+    // // Validate document_title enum
+    // const validDocumentTitles = [
+    //   'Barangay Business Clearance',
+    //   'Barangay Clearance',
+    //   'Certificate of Indigency',
+    //   'Certificate of Residency',
+    // ]
+    // if (!validDocumentTitles.includes(document_title)) {
+    //   console.log('Validation failed: invalid document_title')
+    //   return APIResponse({ error: 'Invalid document_title' }, 400)
+    // }
 
     console.log('Attempting database query')
     // Insert document issuance record

@@ -82,7 +82,7 @@ export default function GenerateDocument() {
         education: data['Educational Assistance'] || ' ',
         medical: data['Medical Assistance'] || ' ',
         financial: data['Financial Assistance'] || ' ',
-        others: data['Others - SOLO PARENT'] || ' ',
+        others: data['Others'] || ' ',
       }
 
       updateProgress(20)

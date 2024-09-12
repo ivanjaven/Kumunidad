@@ -7,7 +7,7 @@
     "linebreak-style": [
       // Enforces consistent linebreak style.
       "error", // Indicates that this rule should be enforced as an error.
-      "windows" // Specifies LF line endings (Unix-style)
+      "unix" // Specifies LF line endings (Unix-style)
     ],
     "quotes": [
       // Enforces consistent use of single quotes.

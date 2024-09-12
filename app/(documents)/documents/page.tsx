@@ -8,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { DOCUMENT_CONFIG } from '@/lib/config/DOCUMENT_CONFIG'
 import { ActivityLogsTypedef } from '@/lib/typedef/activity-logs-typedef'
 import { fetchDocumentLogs } from '@/server/queries/fetch-documents-logs'
-import page from '../pdf/page'
 
 const ITEMS_PER_PAGE = 10
 const FETCH_DELAY = 1000
@@ -28,23 +27,6 @@ export default function DocumentPage() {
   const [activityLog, setActivityLog] = useState<ActivityLogsTypedef[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // const [hasMore, setHasMore] = useState(true)
-  // const [page, setPage] = useState(1)
-
-  const observer = useRef<IntersectionObserver | null>(null)
-  // const lastActivityElementRef = useCallback(
-  //   (node: HTMLDivElement | null) => {
-  //     if (isLoading) return
-  //     if (observer.current) observer.current.disconnect()
-  //     observer.current = new IntersectionObserver((entries) => {
-  //       if (entries[0].isIntersecting && hasMore) {
-  //         setPage((prevPage) => prevPage + 1)
-  //       }
-  //     })
-  //     if (node) observer.current.observe(node)
-  //   },
-  //   [isLoading, hasMore],
-  // )
 
   useEffect(() => {
     const loadDocumentLogs = async () => {
@@ -54,7 +36,6 @@ export default function DocumentPage() {
         await new Promise((resolve) => setTimeout(resolve, FETCH_DELAY))
         const response = await fetchDocumentLogs(1, ITEMS_PER_PAGE)
         setActivityLog(response.data)
-        // setHasMore(response.data.length === ITEMS_PER_PAGE)
       } catch (error) {
         console.error('Failed to fetch document logs:', error)
         setError('Failed to load document logs. Please try again later.')
@@ -69,7 +50,6 @@ export default function DocumentPage() {
     (activity: ActivityLogsTypedef, index: number) => (
       <div
         key={activity.date + index}
-        // ref={index === activityLog.length - 1 ? lastActivityElementRef : null}
         className="flex items-center justify-between rounded-lg border border-gray-200 p-4 md:p-6 lg:p-8"
       >
         <div>
@@ -138,7 +118,7 @@ export default function DocumentPage() {
           {error && <p className="text-center text-red-500">{error}</p>}
           {!isLoading && activityLog.length > 0 && (
             <p className="text-center text-gray-500">
-              No more activities to load.
+              See activity logs for detailed list.
             </p>
           )}
           {!isLoading && activityLog.length === 0 && (
