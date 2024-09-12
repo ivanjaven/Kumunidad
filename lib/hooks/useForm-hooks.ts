@@ -1,9 +1,9 @@
 import { toast } from 'sonner'
+import { createBlog } from '@/server/actions/insert-blog'
 import { useCallback } from 'react'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
 import { BlogStateTypedef } from '@/lib/typedef/blog-state-typedef'
-
 export function useFormHooks({
   // State variables
   stateForBarangayExecutiveOfficials,
@@ -28,12 +28,7 @@ export function useFormHooks({
   setTermsAndConditionsAccepted,
   setCloseDialog,
 }: BlogStateTypedef) {
-  /**
-   * Resets all form fields to their initial state.
-   * Uses the BLOG_CONFIG for initializing some fields with default values.
-   */
   const handleReset = useCallback(() => {
-    // Reset all form fields to their initial state
     setBarangayExecutiveOfficials(
       BLOG_CONFIG.OFFICIALS.EXECUTIVE.map((official) => ({
         role: official.role as Role,
@@ -62,7 +57,6 @@ export function useFormHooks({
     setEndingYear('')
     setTermsAndConditionsAccepted(false)
   }, [
-    // Dependencies for useCallback
     setBarangayExecutiveOfficials,
     setBarangaykagawads,
     setBarangayLupongTagapamayapa,
@@ -74,15 +68,9 @@ export function useFormHooks({
     setTermsAndConditionsAccepted,
   ])
 
-  /**
-   * Handles form submission.
-   * Validates all form fields and submits the data if all validations pass.
-   * Displays error messages for any validation failures.
-   */
-  const handleSubmit = useCallback(() => {
-    // Aggregate all form data
+  const handleSubmit = useCallback(async () => {
     const allData = {
-      executiveOfficials: stateForBarangayExecutiveOfficials,
+      stateForBarangayExecutiveOfficials,
       stateForBarangaykagawads,
       stateForBarangayLupongTagapamayapa,
       stateForSKExecutiveOfficials,
@@ -95,11 +83,6 @@ export function useFormHooks({
 
     const errors: string[] = []
 
-    /**
-     * Helper function to check if official names and images are provided
-     * @param {BlogTypedef[]} officials - Array of officials to check
-     * @param {string} roleName - Name of the role for error messages
-     */
     const checkOfficials = (officials: BlogTypedef[], roleName: string) => {
       officials.forEach((official) => {
         if (!official.name)
@@ -109,8 +92,10 @@ export function useFormHooks({
       })
     }
 
-    // Perform validations
-    checkOfficials(allData.executiveOfficials, 'Executive Official')
+    checkOfficials(
+      allData.stateForBarangayExecutiveOfficials,
+      'Executive Official',
+    )
     checkOfficials(allData.stateForBarangaykagawads, 'Kagawad')
     checkOfficials(allData.stateForBarangayLupongTagapamayapa, 'Lupon')
     checkOfficials(
@@ -125,23 +110,46 @@ export function useFormHooks({
     if (!stateForTermsAndConditionsAccepted)
       errors.push('You must accept the terms and conditions')
 
-    // Handle errors or submit form
     if (errors.length > 0) {
       toast.error(errors[0], {
         description: new Date().toLocaleString(),
         action: { label: 'Undo', onClick: () => console.log('Undo') },
       })
     } else {
-      console.log(
-        'Form submitted with the following data:',
-        JSON.stringify(allData, null, 2),
-      )
-      toast.success('Form submitted successfully', { duration: 3000 })
-      setCloseDialog()
-      handleReset()
+      try {
+        const result = await createBlog({
+          stateForBarangayExecutiveOfficials,
+          stateForBarangaykagawads,
+          stateForBarangayLupongTagapamayapa,
+          stateForSKExecutiveOfficials,
+          stateForSKkagawads,
+          stateForBarangayTanod,
+          stateForStartingYear,
+          stateForEndingYear,
+          stateForTermsAndConditionsAccepted,
+          setBarangayExecutiveOfficials,
+          setBarangaykagawads,
+          setBarangayLupongTagapamayapa,
+          setSKExecutiveOfficials,
+          setSKkagawads,
+          setBarangayTanod,
+          setStartingYear,
+          setEndingYear,
+          setTermsAndConditionsAccepted,
+          setCloseDialog,
+        })
+        console.log('Blog created successfully:', result)
+        toast.success('Blog created successfully', { duration: 3000 })
+        setCloseDialog()
+        handleReset()
+      } catch (error) {
+        console.error('Error creating blog:', error)
+        toast.error('Failed to create blog. Please try again.', {
+          duration: 3000,
+        })
+      }
     }
   }, [
-    // Dependencies for useCallback
     stateForBarangayExecutiveOfficials,
     stateForBarangaykagawads,
     stateForBarangayLupongTagapamayapa,
@@ -151,6 +159,15 @@ export function useFormHooks({
     stateForStartingYear,
     stateForEndingYear,
     stateForTermsAndConditionsAccepted,
+    setBarangayExecutiveOfficials,
+    setBarangaykagawads,
+    setBarangayLupongTagapamayapa,
+    setSKExecutiveOfficials,
+    setSKkagawads,
+    setBarangayTanod,
+    setStartingYear,
+    setEndingYear,
+    setTermsAndConditionsAccepted,
     setCloseDialog,
     handleReset,
   ])

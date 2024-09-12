@@ -419,10 +419,54 @@ CREATE TABLE IF NOT EXISTS auth (
     resident_id BIGINT UNSIGNED NOT NULL,
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY fk_auth_resident (resident_id) REFERENCES residents(resident_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+/**
+ * Table: officers_batch
+ * Description: Stores information about the term of the officers.
+ *
+ * Columns:
+ * - batch_id: Unique identifier for each batch of officers.
+ * - term: The term of the officers.
+ * - created_at: The timestamp when the record was created, set to the current timestamp by default.
+ * - updated_at: The timestamp when the record was last updated, set to the current timestamp on update.
+ */
+CREATE TABLE IF NOT EXISTS officers_batch (
+    batch_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    term VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+/**
+ * Table: officers_role
+ * Description: Stores information about the officers and their roles.
+ *
+ * Columns:
+ * - role_id: Unique identifier for each officer's role.
+ * - batch_id: Foreign key referencing the officers_batch table.
+ * - image_base64: The base64-encoded image of the officer.
+ * - full_name: The full name of the officer.
+ * - role: The role of the officer.
+ * - created_at: The timestamp when the record was created, set to the current timestamp by default.
+ * - updated_at: The timestamp when the record was last updated, set to the current timestamp on update.
+ *
+ * Constraints:
+ * - Foreign key relationship with officers_batch table.
+ */
+CREATE TABLE IF NOT EXISTS officers_role (
+    role_id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    batch_id BIGINT UNSIGNED NOT NULL,
+    image_base64 LONGTEXT NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY fk_officers_role_officers_batch (batch_id) REFERENCES officers_batch(batch_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- =============================================
