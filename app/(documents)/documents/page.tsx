@@ -9,7 +9,6 @@ import { DOCUMENT_CONFIG } from '@/lib/config/DOCUMENT_CONFIG'
 import { ActivityLogsTypedef } from '@/lib/typedef/activity-logs-typedef'
 import { fetchDocumentLogs } from '@/server/queries/fetch-documents-logs'
 
-
 const ITEMS_PER_PAGE = 10
 const FETCH_DELAY = 1000
 const documents = DOCUMENT_CONFIG

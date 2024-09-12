@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import Image from 'next/image'
 import {
   Select,
   SelectContent,
@@ -28,6 +29,7 @@ import {
 import { Check, Search } from 'lucide-react'
 import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef'
 import { AccountTypedef } from '@/lib/typedef/account-typedef'
+import { AccountDisplayTypedef } from '@/lib/typedef/account-display-typedef'
 import { insertAccountRecord } from '@/server/actions/insert-account'
 import { toast } from 'sonner'
 import { hashPassword } from '@/lib/password-hash'
@@ -36,45 +38,18 @@ import { ProfileCard } from '@/components/ProfileCard'
 // Import the fetchSearchSuggestions function
 import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
 
-// Sample data for the profile cards (you may want to fetch this dynamically as well)
-const profiles = [
-  {
-    id: 1,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Secretary',
-    fullName: 'Jane Doe',
-  },
-  {
-    id: 2,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Treasurer',
-    fullName: 'John Smith',
-  },
-  {
-    id: 3,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Volunteer',
-    fullName: 'Emily Johnson',
-  },
-  {
-    id: 4,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Secretary',
-    fullName: 'Michael Brown',
-  },
-  {
-    id: 5,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Treasurer',
-    fullName: 'Sarah Davis',
-  },
-  {
-    id: 6,
-    imageUrl: '/placeholder.svg?height=100&width=100',
-    role: 'Volunteer',
-    fullName: 'Chris Wilson',
-  },
-]
+// Import the fetchUsers function
+import { fetchUsers } from '@/server/queries/fetch-users'
+
+function Banner() {
+  return (
+    <div className="relative h-48 w-full overflow-hidden">
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <h1 className="text-4xl font-bold text-white">User Accounts</h1>
+      </div>
+    </div>
+  )
+}
 
 function AddUserDialog() {
   const [open, setOpen] = useState(false)
@@ -139,8 +114,8 @@ function AddUserDialog() {
       toast.error('Failed to create user account. Please try again.', {
         action: {
           label: 'Try again',
-          onClick: () => handleSave()
-        }
+          onClick: () => handleSave(),
+        },
       })
     }
   }
@@ -157,7 +132,7 @@ function AddUserDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="absolute right-4 top-4 bg-black text-white hover:bg-gray-800">
+        <Button className="bg-black text-white hover:bg-gray-800">
           Add User
         </Button>
       </DialogTrigger>
@@ -287,13 +262,51 @@ function AddUserDialog() {
 }
 
 export default function ProfileCardGrid() {
+  const [profiles, setProfiles] = useState<AccountDisplayTypedef[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function loadProfiles() {
+      try {
+        setIsLoading(true)
+        const data = await fetchUsers()
+        setProfiles(data)
+      } catch (err) {
+        console.error('Error fetching profiles:', err)
+        setError('Failed to load profiles. Please try again.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadProfiles()
+  }, [])
+
   return (
-    <div className="container relative mx-auto p-4">
-      <AddUserDialog />
-      <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {profiles.map((profile) => (
-          <ProfileCard key={profile.id} {...profile} />
-        ))}
+    <div className="relative">
+      <Banner />
+      <div className="container mx-auto px-4 relative">
+        <div className="absolute right-4 -top-12">
+          <AddUserDialog />
+        </div>
+        {isLoading ? (
+          <p className="mt-8 text-center">Loading profiles...</p>
+        ) : error ? (
+          <p className="mt-8 text-center text-red-500">{error}</p>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {profiles.map((profile) => (
+              <ProfileCard 
+                key={profile.auth_id} 
+                id={profile.auth_id}
+                imageUrl={profile.image_base64 || '/placeholder.svg?height=100&width=100'}
+                role={profile.role}
+                fullName={profile.full_name}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
