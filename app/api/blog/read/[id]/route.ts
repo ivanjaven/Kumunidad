@@ -24,8 +24,8 @@ export async function GET(
     // Execute the database query to fetch blog details by ID
     const blog = await Query({
       query: `
-        SELECT role, 
-        full_name as name, 
+        SELECT role,
+        full_name as name,
         image_base64 as image
         FROM officers_role
         WHERE batch_id = ?

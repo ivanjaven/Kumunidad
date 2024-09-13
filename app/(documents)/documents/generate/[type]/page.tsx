@@ -65,7 +65,7 @@ export default function GenerateDocument() {
       )
       const reason = reasonField ? data[reasonField.name] : ''
 
-      const user = await fetchUser(1) // temporary use
+      const user = await fetchUser(101) // temporary use
       const userInfo = user[0]
 
       const requiredData = {
