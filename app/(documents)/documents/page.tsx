@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Card, CardHeader, CardContent } from '@/components/ui/card'
+import { CardHeader, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { DOCUMENT_CONFIG } from '@/lib/config/DOCUMENT_CONFIG'
 import { ActivityLogsTypedef } from '@/lib/typedef/activity-logs-typedef'
