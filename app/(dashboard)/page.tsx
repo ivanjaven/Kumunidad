@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { jwtDecode } from 'jwt-decode'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
@@ -21,7 +20,6 @@ import { QuickAccessTypedef } from '@/lib/typedef/quick-access-typedef'
 import { BarangayConfig } from '@/lib/config/BARANGAY_CONFIG'
 import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef'
 import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
-import Cookies from 'js-cookie'
 
 const SearchSuggestion = ({
   resident,
@@ -45,34 +43,37 @@ export default function HomeDashboard() {
   const [userRole, setUserRole] = useState<keyof typeof userRoles | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestions, setSuggestions] = useState<SearchSuggestionTypedef[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
-    const token = Cookies.get('token')
-
-    // Check if token exists in the cookies
-    if (token) {
+    async function validateSession() {
       try {
-        // Decode the token
-        const decodedToken = jwtDecode<{ role: keyof typeof userRoles }>(token)
+        const response = await fetch('/api/auth/validate', {
+          method: 'GET',
+          credentials: 'include', // This is important to include cookies in the request
+        })
 
-        // Check if the role is valid
-        if (userRoles.hasOwnProperty(decodedToken.role)) {
-          setUserRole(decodedToken.role)
-          // If token is valid, redirect to '/'
-          router.push('/')
+        if (!response.ok) {
+          throw new Error('Authentication failed')
+        }
+
+        const data = await response.json()
+
+        if (data.authenticated && userRoles.hasOwnProperty(data.role)) {
+          setUserRole(data.role)
         } else {
-          console.error('Invalid user role:', decodedToken.role)
-          router.push('/log-in')
+          throw new Error('Invalid user role')
         }
       } catch (error) {
-        console.error('Error decoding token:', error)
+        console.error('Session validation error:', error)
         router.push('/log-in')
+      } finally {
+        setIsLoading(false)
       }
-    } else {
-      console.log('No token found in cookies')
-      router.push('/log-in')
     }
+
+    validateSession()
   }, [router, userRoles])
 
   // Fetch search suggestions with debounce
@@ -94,8 +95,12 @@ export default function HomeDashboard() {
     return () => clearTimeout(delayDebounceFn)
   }, [searchQuery])
 
-  if (userRole === null) {
+  if (isLoading) {
     return <div>Loading...</div>
+  }
+
+  if (userRole === null) {
+    return null // or a login prompt
   }
 
   const quickAccessFeatures = userRoles[userRole]?.quickAccessFeatures || []

@@ -18,6 +18,15 @@ export function middleware(request: NextRequest) {
 
   console.log('Token from cookie:', token) // Debugging log
 
+  // Special handling for root path
+  if (pathname === '/') {
+    if (token && verifyToken(token)) {
+      return NextResponse.next()
+    } else {
+      return NextResponse.redirect(new URL('/log-in', request.url))
+    }
+  }
+
   if (!token) {
     console.log('No token found, redirecting to login') // Debugging log
     return NextResponse.redirect(new URL('/log-in', request.url))
@@ -31,7 +40,7 @@ export function middleware(request: NextRequest) {
   }
 
   // If token is valid, allow the request to proceed
-  console.log('Returning after succes decoding')
+  console.log('Returning after successful decoding')
   return NextResponse.next()
 }
 
@@ -40,13 +49,7 @@ export const config = {
   matcher: [
     '/log-in',
     '/api/auth/log-in',
-    /*
-     * Match all other paths except for:
-     * - api routes except `/api/log-in`
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico|^/$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/api/((?!auth/log-in).*)',
   ],
 }
