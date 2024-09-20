@@ -8,48 +8,45 @@ import { generateToken } from '@/server/services/token-generator'
 
 export async function POST(request: NextRequest) {
   try {
-    // Parse the request body
     const { username, password } = await request.json()
 
-    // Log the incoming request without sensitive information
     APILogger(request, { username })
 
-    console.log('Authenticating user')
-
-    // Execute the database query to fetch the user
     const users = await Query({
       query: 'SELECT * FROM auth WHERE username = ?',
       values: [username],
     })
 
-    console.log('Query Result:', users)
-
-    // Check if user was found
     if (users.length === 0) {
       return APIResponse({ error: 'User not found' }, 404)
     }
 
-    const user = users[0]
+    // Loop through users and compare the password
+    let foundUser = null
+    for (const user of users) {
+      const passwordMatch = await compare(password, user.password)
+      if (passwordMatch) {
+        foundUser = user
+        break
+      }
+    }
 
-    // Compare the provided password with the stored hash
-    const passwordMatch = await compare(password, user.password)
-
-    if (!passwordMatch) {
+    if (!foundUser) {
       return APIResponse({ error: 'Invalid credentials' }, 401)
     }
 
     // Authentication successful, generate JWT token
     const token = await generateToken({
-      userId: user.id,
-      username: user.username,
-      role: user.role,
+      userId: foundUser.id,
+      username: foundUser.username,
+      role: foundUser.role,
     })
 
     const response = NextResponse.json(
       {
-        username: user.username,
-        resident_id: user.resident_id,
-        role: user.role,
+        username: foundUser.username,
+        resident_id: foundUser.resident_id,
+        role: foundUser.role,
       },
       { status: 200 },
     )
@@ -59,11 +56,10 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 86400, // 1 day
       path: '/',
     })
 
-    console.log('IN the api')
+    console.log('API authentication successful')
     console.log(response)
 
     return response

@@ -30,17 +30,15 @@ type UserFormValue = z.infer<typeof formSchema>
 
 export function UserAuthForm() {
   const [loading, setLoading] = useState(false)
-  const router = useRouter() // Initialize the router
+  const router = useRouter()
 
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
   })
 
   const onSubmit = async (data: UserFormValue) => {
-    console.log(data)
     setLoading(true)
     try {
-      // Simulate login request
       const response = await fetch('/api/auth/log-in', {
         method: 'POST',
         headers: {
@@ -52,14 +50,11 @@ export function UserAuthForm() {
       if (response.ok) {
         const { token } = await response.json()
 
-        // Store the token in a cookie with an expiration date
-        Cookies.set('token', token) // Token will be valid for 7 days
+        Cookies.set('token', token)
 
-        // Redirect to the home page
         router.push('/')
       } else {
         console.error('Login failed')
-        // Handle login failure
       }
     } catch (error) {
       console.error('Error logging in:', error)
