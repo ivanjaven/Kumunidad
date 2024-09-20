@@ -38,7 +38,6 @@ export function middleware(request: NextRequest) {
 // Define the routes for which middleware should run
 export const config = {
   matcher: [
-    // Include the log-in route and API log-in route
     '/log-in',
     '/api/auth/log-in',
     /*
@@ -48,6 +47,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|^/$).*)',
   ],
 }

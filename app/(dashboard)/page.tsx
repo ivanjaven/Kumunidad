@@ -21,6 +21,7 @@ import { QuickAccessTypedef } from '@/lib/typedef/quick-access-typedef'
 import { BarangayConfig } from '@/lib/config/BARANGAY_CONFIG'
 import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef'
 import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
+import Cookies from 'js-cookie'
 
 const SearchSuggestion = ({
   resident,
@@ -47,27 +48,25 @@ export default function HomeDashboard() {
   const router = useRouter()
 
   useEffect(() => {
-    const token = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('token='))
+    const token = Cookies.get('token')
+
+    // Check if token exists in the cookies
     if (token) {
-      console.log('Found token:', token)
       try {
-        const tokenValue = token.split('=')[1]
-        console.log('Token value:', tokenValue)
-        const decodedToken = jwtDecode<{ role: keyof typeof userRoles }>(
-          tokenValue,
-        )
-        console.log('Decoded token:', decodedToken)
+        // Decode the token
+        const decodedToken = jwtDecode<{ role: keyof typeof userRoles }>(token)
+
+        // Check if the role is valid
         if (userRoles.hasOwnProperty(decodedToken.role)) {
           setUserRole(decodedToken.role)
+          // If token is valid, redirect to '/'
+          router.push('/')
         } else {
           console.error('Invalid user role:', decodedToken.role)
           router.push('/log-in')
         }
       } catch (error) {
         console.error('Error decoding token:', error)
-        console.error('Error details:', JSON.stringify(error, null, 2))
         router.push('/log-in')
       }
     } else {

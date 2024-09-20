@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { FingerprintIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation' // Import the useRouter hook
+import Cookies from 'js-cookie'
 
 const formSchema = z.object({
   username: z
@@ -39,6 +40,7 @@ export function UserAuthForm() {
     console.log(data)
     setLoading(true)
     try {
+      // Simulate login request
       const response = await fetch('/api/auth/log-in', {
         method: 'POST',
         headers: {
@@ -48,20 +50,19 @@ export function UserAuthForm() {
       })
 
       if (response.ok) {
-        const result = await response.json()
-        console.log(`Result of response ${result}` || 'No result')
+        const { token } = await response.json()
 
-        // Redirect to the home page after successful login
+        // Store the token in a cookie with an expiration date
+        Cookies.set('token', token) // Token will be valid for 7 days
+
+        // Redirect to the home page
         router.push('/')
-        // Force a hard reload to ensure the new token is used
-        window.location.href = '/'
       } else {
-        const errorData = await response.json()
-        alert(errorData.error || 'Login failed. Please try again.')
+        console.error('Login failed')
+        // Handle login failure
       }
     } catch (error) {
-      console.error('Login error:', error)
-      alert('An error occurred. Please try again.')
+      console.error('Error logging in:', error)
     } finally {
       setLoading(false)
     }
