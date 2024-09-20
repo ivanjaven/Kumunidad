@@ -35,6 +35,7 @@ import { hashPassword } from '@/lib/password-hash'
 import { ProfileCardWithDelete } from '@/components/ProfileCard'
 import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
 import { fetchUsers } from '@/server/queries/fetch-users'
+import { z } from 'zod'
 
 const Banner = () => (
   <div className="relative h-48 w-full bg-gray-100">
@@ -43,6 +44,14 @@ const Banner = () => (
     </div>
   </div>
 )
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  username: z.string().email().includes('@bambang.com', { message: 'Username must contain @bambang.com' }),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  role: z.string().min(1, 'Role is required'),
+  residentId: z.string().min(1, 'Resident ID is required'),
+})
 
 interface AddUserDialogProps {
   onUserAdded: () => void;
@@ -62,6 +71,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null)
+  const [formErrors, setFormErrors] = useState<Partial<z.infer<typeof formSchema>>>({})
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -101,18 +111,15 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
   }, [formData.searchTerm, fetchSuggestions])
 
   const handleSave = async () => {
-    const { role, residentId, username, password } = formData
-    if (!role || !residentId || !username || !password) {
-      toast.error('Please fill in all required fields, including selecting a valid resident.')
-      return
-    }
-
     try {
-      const hashedPassword = await hashPassword(password)
+      formSchema.parse(formData)
+      setFormErrors({})
+
+      const hashedPassword = await hashPassword(formData.password)
       const accountData: AccountTypedef = {
-        role,
-        resident_id: residentId,
-        username,
+        role: formData.role,
+        resident_id: formData.residentId,
+        username: formData.username,
         password: hashedPassword,
       }
 
@@ -122,13 +129,17 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
       setOpen(false)
       resetForm()
     } catch (error) {
-      console.error('Error creating user account:', error)
-      toast.error('Failed to create user account. Please try again.', {
-        action: {
-          label: 'Try again',
-          onClick: () => handleSave(),
-        },
-      })
+      if (error instanceof z.ZodError) {
+        setFormErrors(error.flatten().fieldErrors)
+      } else {
+        console.error('Error creating user account:', error)
+        toast.error('Failed to create user account. Please try again.', {
+          action: {
+            label: 'Try again',
+            onClick: () => handleSave(),
+          },
+        })
+      }
     }
   }
 
@@ -232,6 +243,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
               onChange={handleInputChange}
               className="border-gray-300"
             />
+            {formErrors.username && (
+              <p className="text-red-500 text-sm">{formErrors.username[0]}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-sm font-medium">
@@ -244,6 +258,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
               onChange={handleInputChange}
               className="border-gray-300"
             />
+            {formErrors.password && (
+              <p className="text-red-500 text-sm">{formErrors.password[0]}</p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="role" className="text-sm font-medium">
@@ -264,6 +281,9 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
                 <SelectItem value="volunteer">Volunteer</SelectItem>
               </SelectContent>
             </Select>
+            {formErrors.role && (
+              <p className="text-red-500 text-sm">{formErrors.role[0]}</p>
+            )}
           </div>
         </div>
         <div className="mt-6 flex justify-end space-x-2">
@@ -312,6 +332,13 @@ const ProfileCardGrid = () => {
     loadProfiles()
   }
 
+  const handleUserDeleted = useCallback((deletedId: string | number) => {
+    setProfiles((prevProfiles) =>
+      prevProfiles.filter((profile) => profile.auth_id !== deletedId)
+    )
+    toast.success('User account deleted successfully.')
+  }, [])
+
   return (
     <div className="bg-white">
       <Banner />
@@ -332,9 +359,9 @@ const ProfileCardGrid = () => {
                 id={profile.auth_id}
                 imageUrl={profile.image_base64 || '/placeholder.svg?height=100&width=100'}
                 role={profile.role}
-                fullName={profile.full_name} onDelete={function (id: string | number): void {
-                  throw new Error('Function not implemented.')
-                } }              />
+                fullName={profile.full_name}
+                onDelete={handleUserDeleted}
+              />
             ))}
           </div>
         )}
