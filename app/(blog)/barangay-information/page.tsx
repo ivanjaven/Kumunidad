@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { BlogTypedef } from '@/lib/typedef/blog-typedef'
 import { fetchBlogs } from '@/server/queries/fetch-blog'
+import { deleteofficers } from '@/server/actions/delete-officers' 
 
 export default function Home() {
   const [viewMode, setViewMode] = useState('list')
@@ -71,12 +72,19 @@ export default function Home() {
     setBatchToDelete(batch)
   }
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     if (batchToDelete) {
-      setBatches(
-        batches.filter((batch) => batch.batch_id !== batchToDelete.batch_id),
-      )
-      setBatchToDelete(null)
+      try {
+        await deleteofficers(batchToDelete.batch_id)
+        setBatches(
+          batches.filter((batch) => batch.batch_id !== batchToDelete.batch_id),
+        )
+        setBatchToDelete(null)
+      } catch (error) {
+        console.error('Error deleting officer:', error)
+        setError('Failed to delete officer')
+        // You might want to show an error message to the user here
+      }
     }
   }
 
