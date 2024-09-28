@@ -91,7 +91,7 @@ export function BlogDialogForm() {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button>Manage Barangay Officials</Button>
+        <Button>Add Officials</Button>
       </DialogTrigger>
       <DialogContent className="max-w-6xl">
         <DialogHeader>

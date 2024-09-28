@@ -1,14 +1,15 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { BlogDisplay } from '@/components/blog-display'
-import { useState, useEffect } from 'react'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { GridIcon, ListIcon } from 'lucide-react'
+import { Grid, List } from 'lucide-react'
 import { BatchCard } from '@/components/BatchCard'
 import { BatchTypedef } from '@/lib/typedef/batch-typedef'
 import { fetchBatches } from '@/server/queries/fetch-batches'
 import { DeleteConfirmDialog } from '@/components/DeleteConfirmDialog'
+import { BlogDialogForm } from '@/components/blog-dialog-form'
 
 export default function Home() {
   const [viewMode, setViewMode] = useState('list')
@@ -43,60 +44,65 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      <header className="bg-gray-100 py-6">
+      <header className="border-b border-gray-200 py-6">
         <div className="container mx-auto flex items-center justify-between px-4">
           <div className="flex items-center space-x-4">
             <Image
               src="/assets/images/5.webp"
               alt="Barangay Logo"
-              width={60}
-              height={60}
+              width={48}
+              height={48}
               className="rounded-full"
             />
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl font-semibold text-gray-900">
               Barangay Officers
             </h1>
           </div>
         </div>
       </header>
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-4 flex justify-end">
+        <div className="mb-6 flex justify-end">
           <ToggleGroup
             type="single"
             value={viewMode}
             onValueChange={(value) => value && setViewMode(value)}
-            className="rounded-md border border-gray-200 shadow-sm"
+            className="rounded-md border border-gray-200"
           >
             <ToggleGroupItem
               value="list"
               aria-label="Toggle list view"
-              className="px-3 py-2 transition-colors data-[state=on]:bg-blue-100 data-[state=on]:text-blue-600"
+              className="px-3 py-2 transition-colors data-[state=on]:bg-gray-100"
             >
-              <GridIcon className="h-4 w-4" />
+              <List className="h-4 w-4" />
             </ToggleGroupItem>
             <ToggleGroupItem
               value="grid"
               aria-label="Toggle grid view"
-              className="px-3 py-2 transition-colors data-[state=on]:bg-blue-100 data-[state=on]:text-blue-600"
+              className="px-3 py-2 transition-colors data-[state=on]:bg-gray-100"
             >
-              <ListIcon className="h-4 w-4" />
+              <Grid className="h-4 w-4" />
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
         {viewMode === 'list' ? (
           <BlogDisplay viewMode={viewMode} />
         ) : (
-          <div className="mx-auto w-full max-w-md">
+          <div className="relative mx-auto w-full max-w-3xl">
+            <div className="absolute -top-14 right-0">
+              <BlogDialogForm />
+            </div>
             {batches.length === 0 ? (
               <p className="text-center text-gray-500">No batches available.</p>
             ) : (
-              batches.map((batch) => (
-                <BatchCard
-                  key={batch.batch_id}
-                  batch={batch}
-                  onDelete={handleDeleteClick}
-                />
-              ))
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {batches.map((batch) => (
+                  <BatchCard
+                    key={batch.batch_id}
+                    batch={batch}
+                    onDelete={handleDeleteClick}
+                  />
+                ))}
+              </div>
             )}
           </div>
         )}

@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
 
   // Special handling for root path
   if (pathname === '/') {
-    if (token && await verifyToken(token)) {
+    if (token && (await verifyToken(token))) {
       return NextResponse.next()
     } else {
       return NextResponse.redirect(new URL('/log-in', request.url))
