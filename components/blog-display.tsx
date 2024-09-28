@@ -1,43 +1,13 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import { fetchBlogs } from '@/server/queries/fetch-blog'
 import { BlogTypedef, Role } from '@/lib/typedef/blog-typedef'
 import BlogCard from '@/components/blog-card'
 import { BLOG_CONFIG } from '@/lib/config/BLOG_CONFIG'
 
-interface BlogDisplayProps {
+interface BlogDisplayProps { 
   viewMode: string
+  blogs: BlogTypedef[]
 }
 
-export function BlogDisplay({ viewMode }: BlogDisplayProps) {
-  const [blogs, setBlogs] = useState<BlogTypedef[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function loadBlogs() {
-      try {
-        const fetchedBlogs = await fetchBlogs()
-        setBlogs(Array.isArray(fetchedBlogs) ? fetchedBlogs : [fetchedBlogs])
-        setIsLoading(false)
-      } catch (err) {
-        setError('Failed to fetch blogs')
-        setIsLoading(false)
-      }
-    }
-
-    loadBlogs()
-  }, [])
-
-  if (isLoading) {
-    return <div className="py-8 text-center">Loading blogs...</div>
-  }
-
-  if (error) {
-    return <div className="py-8 text-center text-red-600">Error: {error}</div>
-  }
-
+export function BlogDisplay({ viewMode, blogs }: BlogDisplayProps) {
   const renderSection = (label: string, roles: Role[]) => {
     const sectionBlogs = blogs.filter((blog) => roles.includes(blog.role))
     if (sectionBlogs.length === 0) return null
