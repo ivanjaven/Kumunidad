@@ -1,3 +1,4 @@
+import React, { useState, useCallback } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -37,6 +38,8 @@ export function BlogCustomForm({
   setTermsAndConditionsAccepted,
   setCloseDialog,
 }: BlogStateTypedef) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
   const { handleSubmit, handleReset } = useFormHooks({
     stateForBarangayExecutiveOfficials,
     stateForBarangaykagawads,
@@ -58,6 +61,24 @@ export function BlogCustomForm({
     setTermsAndConditionsAccepted,
     setCloseDialog,
   })
+
+  const debouncedHandleSubmit = useCallback(() => {
+    if (!isSubmitting) {
+      setIsSubmitting(true)
+      handleSubmit()
+        .then(() => {
+          // Handle successful submission
+          console.log('Form submitted successfully')
+        })
+        .catch((error) => {
+          // Handle submission error
+          console.error('Error submitting form:', error)
+        })
+        .finally(() => {
+          setIsSubmitting(false)
+        })
+    }
+  }, [handleSubmit, isSubmitting])
 
   return (
     <div className="max-h-[70vh] overflow-y-auto p-6">
@@ -171,10 +192,12 @@ export function BlogCustomForm({
         </div>
       </div>
       <div className="flex justify-end gap-4 p-6">
-        <Button variant="outline" onClick={handleReset}>
+        <Button variant="outline" onClick={handleReset} disabled={isSubmitting}>
           Reset
         </Button>
-        <Button onClick={handleSubmit}>Save</Button>
+        <Button onClick={debouncedHandleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? 'Saving...' : 'Save'}
+        </Button>
       </div>
     </div>
   )
