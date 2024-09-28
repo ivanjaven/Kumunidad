@@ -49,10 +49,7 @@ const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   username: z
     .string()
-    .email()
-    .includes('@bambang.com', {
-      message: 'Username must contain @bambang.com',
-    }),
+    .min(6, 'Username must be at least 6 characters'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   role: z.string().min(1, 'Role is required'),
   residentId: z.string().min(1, 'Resident ID is required'),
