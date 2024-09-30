@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from './server/services/token-generator'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Exclude /log-in page route from middleware
@@ -17,6 +17,15 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value
 
   console.log('Token from cookie:', token) // Debugging log
+
+  // Special handling for root path
+  if (pathname === '/') {
+    if (token && verifyToken(token)) {
+      return NextResponse.next()
+    } else {
+      return NextResponse.redirect(new URL('/log-in', request.url))
+    }
+  }
 
   if (!token) {
     console.log('No token found, redirecting to login') // Debugging log

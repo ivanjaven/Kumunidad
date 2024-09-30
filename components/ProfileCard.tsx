@@ -47,7 +47,7 @@ export function ProfileCardWithDelete({ id, imageUrl, role, fullName, onDelete }
     try {
       await deleteUserAccount(id)
       setIsOpen(false)
-      onDelete(id)
+      onDelete(id) // Call the onDelete callback to update the parent component
     } catch (error) {
       console.error('Error deleting account:', error)
     } finally {
