@@ -21,12 +21,17 @@ import { BarangayConfig } from '@/lib/config/BARANGAY_CONFIG'
 import { SearchSuggestionTypedef } from '@/lib/typedef/search-suggestion-typedef'
 import { fetchSearchSuggestions } from '@/server/queries/fetch-search-suggestion'
 
-const SearchSuggestion = ({
+const SearchSuggestion = ({ 
   resident,
+  onClick,
 }: {
-  resident: SearchSuggestionTypedef
+  resident: SearchSuggestionTypedef;
+  onClick: (id: number) => void;
 }) => (
-  <div className="flex items-center space-x-4 p-3 hover:bg-gray-100">
+  <div 
+    className="flex items-center space-x-4 p-3 hover:bg-gray-100 cursor-pointer"
+    onClick={() => onClick(resident.id)}
+  >
     <Image
       src={resident.image}
       alt={resident.name}
@@ -95,6 +100,12 @@ export default function HomeDashboard() {
     return () => clearTimeout(delayDebounceFn)
   }, [searchQuery])
 
+  const handleSuggestionClick = (id: number) => {
+    router.push(`/profile/id/${id}`)
+    setSearchQuery('')
+    setSuggestions([])
+  }
+
   if (isLoading) {
     return <div>Loading...</div>
   }
@@ -135,7 +146,11 @@ export default function HomeDashboard() {
                 {suggestions.length > 0 && (
                   <div className="absolute z-10 mt-3 w-full rounded-md border border-gray-300 bg-white shadow-lg">
                     {suggestions.map((resident) => (
-                      <SearchSuggestion key={resident.id} resident={resident} />
+                      <SearchSuggestion 
+                        key={resident.id} 
+                        resident={resident} 
+                        onClick={handleSuggestionClick}
+                      />
                     ))}
                   </div>
                 )}

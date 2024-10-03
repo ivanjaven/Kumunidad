@@ -11,6 +11,12 @@ import { fetchProfile } from '@/server/queries/fetch-profile'
 import { ProfileTypedef } from '@/lib/typedef/profile-typedef'
 import { format, parseISO } from 'date-fns'
 
+interface ProfilePageProps {
+  params: {
+    id: string
+  }
+}
+
 const ITEMS_PER_PAGE = 25
 const FETCH_DELAY = 2000
 
@@ -42,7 +48,7 @@ const formatDate = (dateString: string): string => {
   }
 }
 
-export default function ProfilePage() {
+export default function ProfilePage({ params }: ProfilePageProps): React.ReactElement {
   const [activityLog, setActivityLog] = useState<ActivityLogsTypedef[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -71,7 +77,7 @@ export default function ProfilePage() {
       setError(null)
       try {
         await new Promise((resolve) => setTimeout(resolve, FETCH_DELAY))
-        const response = await fetchProfileLogs(101, page, ITEMS_PER_PAGE)
+        const response = await fetchProfileLogs(parseInt(params.id), page, ITEMS_PER_PAGE)
         setActivityLog((prevLogs) => [...prevLogs, ...response.data])
         setHasMore(response.data.length === ITEMS_PER_PAGE)
       } catch (error) {
@@ -83,12 +89,12 @@ export default function ProfilePage() {
     }
 
     loadActivityLogs()
-  }, [page])
+  }, [page, params.id])
 
   useEffect(() => {
     const loadProfile = async () => {
       try {
-        const profileData = await fetchProfile(101)
+        const profileData = await fetchProfile(parseInt(params.id))
         if (profileData.length > 0) {
           setProfile(profileData[0])
         }
@@ -99,7 +105,7 @@ export default function ProfilePage() {
     }
 
     loadProfile()
-  }, [])
+  }, [params.id])
 
   const renderActivityItem = useCallback(
     (activity: ActivityLogsTypedef, index: number) => (
@@ -154,7 +160,6 @@ export default function ProfilePage() {
             </div>
             <div className="text-center sm:text-left flex-1">
               <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900">{profile?.full_name || 'Loading...'}</h1>
-   
             </div>
           </div>
         </div>
@@ -193,21 +198,21 @@ export default function ProfilePage() {
                 <CardTitle className="text-xl font-semibold text-gray-800">Activity</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-          {activityLog.map(renderActivityItem)}
-          {isLoading &&
-            Array.from({ length: 3 }).map((_, index) => (
-              <ActivitySkeleton key={index} />
-            ))}
-          {error && <p className="text-center text-red-500">{error}</p>}
-          {!isLoading && !hasMore && activityLog.length > 0 && (
-            <p className="text-center text-gray-500">
-              No more activities to load.
-            </p>
-          )}
-          {!isLoading && !hasMore && activityLog.length === 0 && (
-            <p className="text-center text-gray-500">No activities found.</p>
-          )}
-        </CardContent>
+                {activityLog.map(renderActivityItem)}
+                {isLoading &&
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <ActivitySkeleton key={index} />
+                  ))}
+                {error && <p className="text-center text-red-500">{error}</p>}
+                {!isLoading && !hasMore && activityLog.length > 0 && (
+                  <p className="text-center text-gray-500">
+                    No more activities to load.
+                  </p>
+                )}
+                {!isLoading && !hasMore && activityLog.length === 0 && (
+                  <p className="text-center text-gray-500">No activities found.</p>
+                )}
+              </CardContent>
             </Card>
           </div>
         </div>
