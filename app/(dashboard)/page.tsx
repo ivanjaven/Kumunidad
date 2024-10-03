@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Search, Bell } from 'lucide-react'
+import { Search } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -155,10 +155,6 @@ export default function HomeDashboard() {
                   </div>
                 )}
               </div>
-              {/* Notification Button */}
-              <Button variant="ghost" size="icon" className="hover:bg-gray-100">
-                <Bell className="h-6 w-6" />
-              </Button>
               {/* User Dropdown Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
