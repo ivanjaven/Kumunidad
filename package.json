@@ -41,6 +41,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^0.2.0",
+    "date-fns": "^4.1.0",
     "docx-templates": "^4.13.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
