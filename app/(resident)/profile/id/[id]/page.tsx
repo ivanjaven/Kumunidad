@@ -50,8 +50,8 @@ const formatDate = (dateString: string): string => {
 
 export default function ProfilePage({ params }: ProfilePageProps): React.ReactElement {
   const [activityLog, setActivityLog] = useState<ActivityLogsTypedef[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<boolean>(false)
   const [hasMore, setHasMore] = useState(true)
   const [page, setPage] = useState(1)
   const [profile, setProfile] = useState<ProfileTypedef | null>(null)
@@ -74,7 +74,6 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
   useEffect(() => {
     const loadActivityLogs = async () => {
       setIsLoading(true)
-      setError(null)
       try {
         await new Promise((resolve) => setTimeout(resolve, FETCH_DELAY))
         const response = await fetchProfileLogs(parseInt(params.id), page, ITEMS_PER_PAGE)
@@ -82,14 +81,15 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
         setHasMore(response.data.length === ITEMS_PER_PAGE)
       } catch (error) {
         console.error('Failed to fetch activity logs:', error)
-        setError('Failed to load activity logs. Please try again later.')
       } finally {
         setIsLoading(false)
       }
     }
 
-    loadActivityLogs()
-  }, [page, params.id])
+    if (!error) {
+      loadActivityLogs()
+    }
+  }, [page, params.id, error])
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -97,10 +97,14 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
         const profileData = await fetchProfile(parseInt(params.id))
         if (profileData.length > 0) {
           setProfile(profileData[0])
+        } else {
+          setError(true)
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error)
-        setError('Failed to load profile. Please try again later.')
+        setError(true)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -114,9 +118,9 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
         ref={index === activityLog.length - 1 ? lastActivityElementRef : null}
         className="flex items-center justify-between rounded-lg border border-gray-200 p-4 md:p-6 lg:p-8"
       >
-        <div>
-          <p className="text-sm font-medium text-black">{activity.date}</p>
-          <p className="text-sm text-gray-600">{activity.description}</p>
+        <div className="mb-2 sm:mb-0">
+          <p className="text-sm font-medium text-gray-900">{activity.date}</p>
+          <p className="text-sm text-gray-700 mt-1 max-w-xl">{activity.description}</p>
         </div>
         <div className="flex items-center space-x-4">
           <p className="text-sm text-gray-600">{activity.label}</p>
@@ -126,13 +130,28 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
     [activityLog.length, lastActivityElementRef],
   )
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center text-gray-800">Resident Not Found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center text-gray-600">The requested resident profile does not exist.</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="bg-white shadow-xl rounded-lg overflow-hidden mb-8">
           <div className="relative h-64 sm:h-80 bg-gradient-to-r from-blue-500 to-indigo-600">
             <Image
-              src="/placeholder.svg"
+              src="/assets/images/cover.jpg"
               alt="Cover Photo"
               fill
               style={{ objectFit: 'cover', opacity: 0.7 }}
@@ -203,7 +222,6 @@ export default function ProfilePage({ params }: ProfilePageProps): React.ReactEl
                   Array.from({ length: 3 }).map((_, index) => (
                     <ActivitySkeleton key={index} />
                   ))}
-                {error && <p className="text-center text-red-500">{error}</p>}
                 {!isLoading && !hasMore && activityLog.length > 0 && (
                   <p className="text-center text-gray-500">
                     No more activities to load.
