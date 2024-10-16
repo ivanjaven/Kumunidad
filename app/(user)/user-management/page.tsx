@@ -47,14 +47,16 @@ const Banner = () => (
 
 const formSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  username: z.string().email().includes('@bambang.com', { message: 'Username must contain @bambang.com' }),
+  username: z
+    .string()
+    .min(6, 'Username must be at least 6 characters'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   role: z.string().min(1, 'Role is required'),
   residentId: z.string().min(1, 'Resident ID is required'),
 })
 
 interface AddUserDialogProps {
-  onUserAdded: () => void;
+  onUserAdded: () => void
 }
 
 const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
@@ -70,15 +72,21 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
   const [suggestions, setSuggestions] = useState<SearchSuggestionTypedef[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(null)
-  const [formErrors, setFormErrors] = useState<Partial<z.infer<typeof formSchema>>>({})
+  const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(
+    null,
+  )
+  const [formErrors, setFormErrors] = useState<
+    Partial<z.infer<typeof formSchema>>
+  >({})
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
-    setFormData((prev) => ({ 
-      ...prev, 
+    setFormData((prev) => ({
+      ...prev,
       [id]: value,
-      ...(id === 'searchTerm' && value === '' ? { residentId: '', name: '' } : {})
+      ...(id === 'searchTerm' && value === ''
+        ? { residentId: '', name: '' }
+        : {}),
     }))
     if (id === 'searchTerm') {
       setSelectedSuggestion(null)
@@ -244,7 +252,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
               className="border-gray-300"
             />
             {formErrors.username && (
-              <p className="text-red-500 text-sm">{formErrors.username[0]}</p>
+              <p className="text-sm text-red-500">{formErrors.username[0]}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -259,7 +267,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
               className="border-gray-300"
             />
             {formErrors.password && (
-              <p className="text-red-500 text-sm">{formErrors.password[0]}</p>
+              <p className="text-sm text-red-500">{formErrors.password[0]}</p>
             )}
           </div>
           <div className="space-y-2">
@@ -282,7 +290,7 @@ const AddUserDialog: React.FC<AddUserDialogProps> = ({ onUserAdded }) => {
               </SelectContent>
             </Select>
             {formErrors.role && (
-              <p className="text-red-500 text-sm">{formErrors.role[0]}</p>
+              <p className="text-sm text-red-500">{formErrors.role[0]}</p>
             )}
           </div>
         </div>
@@ -334,7 +342,7 @@ const ProfileCardGrid = () => {
 
   const handleUserDeleted = useCallback((deletedId: string | number) => {
     setProfiles((prevProfiles) =>
-      prevProfiles.filter((profile) => profile.auth_id !== deletedId)
+      prevProfiles.filter((profile) => profile.auth_id !== deletedId),
     )
     toast.success('User account deleted successfully.')
   }, [])
@@ -343,7 +351,7 @@ const ProfileCardGrid = () => {
     <div className="bg-white">
       <Banner />
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex justify-between items-center">
+        <div className="mb-8 flex items-center justify-between">
           <h2 className="text-2xl font-semibold">User Directory</h2>
           <AddUserDialog onUserAdded={handleUserAdded} />
         </div>
@@ -354,10 +362,13 @@ const ProfileCardGrid = () => {
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {profiles.map((profile) => (
-              <ProfileCardWithDelete 
+              <ProfileCardWithDelete
                 key={profile.auth_id}
                 id={profile.auth_id}
-                imageUrl={profile.image_base64 || '/placeholder.svg?height=100&width=100'}
+                imageUrl={
+                  profile.image_base64 ||
+                  '/placeholder.svg?height=100&width=100'
+                }
                 role={profile.role}
                 fullName={profile.full_name}
                 onDelete={handleUserDeleted}

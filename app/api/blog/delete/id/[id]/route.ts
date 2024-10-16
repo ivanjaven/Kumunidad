@@ -24,7 +24,7 @@ export async function DELETE(
     // Execute the database query to delete auth details by ID
     const result = await Query({
       query: `
-      DELETE FROM auth WHERE auth_id = ?
+      DELETE FROM officers_batch WHERE batch_id  = ?
     `,
       values: [id],
     })

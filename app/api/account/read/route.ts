@@ -4,9 +4,7 @@ import { APIErrHandler } from '@/lib/api-err-handler'
 import { APILogger } from '@/lib/api-req-logger'
 import { Query } from '@/lib/db-con-helper'
 
-export async function GET(
-  request: NextRequest,
-) {
+export async function GET(request: NextRequest) {
   try {
     // Log the incoming request without parameters
     APILogger(request, null)
