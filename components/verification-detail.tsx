@@ -1,10 +1,11 @@
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import Webcam from 'react-webcam'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { RegistrationTypedef } from '@/lib/typedef/registration-typedef'
 import { CameraIcon, Fingerprint } from 'lucide-react'
 import { REGISTRATION_CONFIG } from '@/lib/config/REGISTRATION_CONFIG'
+import { toast } from 'sonner'
 
 interface VerificationDetailProps {
   formData: RegistrationTypedef
@@ -18,8 +19,58 @@ export function VerificationDetail({
   const [photo, setPhoto] = useState<string | null>(
     formData.image_base64 || null,
   )
+  const [fingerprintImage, setFingerprintImage] = useState<string | null>(
+    formData.fingerprint_base64 || null,
+  )
   const [isCameraOpen, setIsCameraOpen] = useState(false)
+  const [isCapturingFingerprint, setIsCapturingFingerprint] = useState(false)
   const webcamRef = useRef<Webcam>(null)
+  const socketRef = useRef<WebSocket | null>(null)
+
+  const connectWebSocket = useCallback(() => {
+    console.log('Attempting to connect WebSocket...')
+    socketRef.current = new WebSocket('ws://localhost:8080/fingerprint-ws')
+
+    socketRef.current.onopen = () => {
+      console.log('WebSocket connection established')
+    }
+
+    socketRef.current.onmessage = (event) => {
+      console.log('WebSocket message received:', event.data)
+      const data = JSON.parse(event.data)
+      if (data.status === 'success') {
+        const fingerprintDataUrl = `data:image/png;base64,${data.image}`
+        setFingerprintImage(fingerprintDataUrl)
+        onFormDataChange('fingerprint_base64', fingerprintDataUrl)
+        setIsCapturingFingerprint(false)
+        toast.success('Fingerprint captured successfully')
+      } else {
+        setIsCapturingFingerprint(false)
+        toast.error(`Capture failed: ${data.message}`)
+      }
+    }
+
+    socketRef.current.onerror = (error) => {
+      console.error('WebSocket error:', error)
+      setIsCapturingFingerprint(false)
+      toast.error('Error connecting to fingerprint service')
+    }
+
+    socketRef.current.onclose = () => {
+      console.log('WebSocket connection closed. Attempting to reconnect...')
+      setTimeout(connectWebSocket, 3000) // Attempt to reconnect after 3 seconds
+    }
+  }, [onFormDataChange])
+
+  useEffect(() => {
+    connectWebSocket()
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close()
+      }
+    }
+  }, [connectWebSocket])
 
   const handleOpenCamera = () => {
     setIsCameraOpen(true)
@@ -36,6 +87,21 @@ export function VerificationDetail({
       onFormDataChange('image_base64', imageSrc)
     }
   }, [webcamRef, onFormDataChange])
+
+  const handleCaptureFingerprint = useCallback(() => {
+    setIsCapturingFingerprint(true)
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      console.log('Sending "capture" message to WebSocket')
+      socketRef.current.send('capture')
+    } else {
+      console.log(
+        'WebSocket not ready. Current state:',
+        socketRef.current?.readyState,
+      )
+      setIsCapturingFingerprint(false)
+      toast.error('WebSocket connection not open. Please try again.')
+    }
+  }, [])
 
   const { facialPhoto, fingerprint } = REGISTRATION_CONFIG.verificationDetails
 
@@ -104,17 +170,32 @@ export function VerificationDetail({
             <h2 className="text-3xl font-bold">{fingerprint.title}</h2>
             <p className="text-base text-gray-800">{fingerprint.subtitle}</p>
           </div>
-          <div className="mx-auto flex h-56 w-56 items-center justify-center rounded-full border-4 border-gray-800 shadow-lg">
-            <Fingerprint className="h-16 w-16 text-gray-700" />
+          <div className="relative mx-auto flex h-56 w-56 items-center justify-center overflow-hidden rounded-full border-4 border-gray-800 shadow-lg">
+            {fingerprintImage ? (
+              <Image
+                src={fingerprintImage}
+                alt="Captured Fingerprint"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            ) : (
+              <Fingerprint className="h-16 w-16 text-gray-700" />
+            )}
           </div>
           <ul className="list-disc pl-6 text-base text-gray-800">
             {fingerprint.instructions.map((instruction, index) => (
               <li key={index}>{instruction}</li>
             ))}
           </ul>
-          <Button className="w-full text-lg font-semibold" size="lg">
+          <Button
+            className="w-full text-lg font-semibold"
+            size="lg"
+            onClick={handleCaptureFingerprint}
+            disabled={isCapturingFingerprint}
+          >
             <Fingerprint className="mr-2 h-6 w-6" />
-            Capture Fingerprint
+            {isCapturingFingerprint ? 'Capturing...' : 'Capture Fingerprint'}
           </Button>
         </div>
       </div>
