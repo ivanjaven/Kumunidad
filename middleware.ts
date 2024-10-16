@@ -16,17 +16,6 @@ export async function middleware(request: NextRequest) {
 
   const token = request.cookies.get('token')?.value
 
-  console.log('Token from cookie:', token) // Debugging log
-
-  // Special handling for root path
-  if (pathname === '/') {
-    if (token && verifyToken(token)) {
-      return NextResponse.next()
-    } else {
-      return NextResponse.redirect(new URL('/log-in', request.url))
-    }
-  }
-
   if (!token) {
     console.log('No token found, redirecting to login') // Debugging log
     return NextResponse.redirect(new URL('/log-in', request.url))
