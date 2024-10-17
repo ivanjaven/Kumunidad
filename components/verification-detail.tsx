@@ -20,7 +20,7 @@ export function VerificationDetail({
     formData.image_base64 || null,
   )
   const [fingerprintImage, setFingerprintImage] = useState<string | null>(
-    formData.fingerprint_base64 || null,
+    formData.fingerprint_fmd || null,
   )
   const [isCameraOpen, setIsCameraOpen] = useState(false)
   const [isCapturingFingerprint, setIsCapturingFingerprint] = useState(false)
@@ -41,7 +41,7 @@ export function VerificationDetail({
       if (data.status === 'success') {
         const fingerprintDataUrl = `data:image/png;base64,${data.image}`
         setFingerprintImage(fingerprintDataUrl)
-        onFormDataChange('fingerprint_base64', fingerprintDataUrl)
+        onFormDataChange('fingerprint_fmd', data.fmd)
         setIsCapturingFingerprint(false)
         toast.success('Fingerprint captured successfully')
       } else {
@@ -53,12 +53,11 @@ export function VerificationDetail({
     socketRef.current.onerror = (error) => {
       console.error('WebSocket error:', error)
       setIsCapturingFingerprint(false)
-      toast.error('Error connecting to fingerprint service')
     }
 
     socketRef.current.onclose = () => {
-      console.log('WebSocket connection closed. Attempting to reconnect...')
-      setTimeout(connectWebSocket, 3000) // Attempt to reconnect after 3 seconds
+      console.log('Fingerprint connection failed. Attempting to reconnect...')
+      setTimeout(connectWebSocket, 1000)
     }
   }, [onFormDataChange])
 
@@ -99,7 +98,7 @@ export function VerificationDetail({
         socketRef.current?.readyState,
       )
       setIsCapturingFingerprint(false)
-      toast.error('WebSocket connection not open. Please try again.')
+      toast.error('Fingerprint scanner is connecting. Please try again.')
     }
   }, [])
 

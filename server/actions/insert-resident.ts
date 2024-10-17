@@ -12,7 +12,7 @@ export async function insertResident(data: RegistrationTypedef): Promise<any> {
       middle_name: data.middlename || 'N/A',
       gender: data.gender,
       image_base64: data.image_base64,
-      fingerprint_base64: data.fingerprint_base64,
+      fingerprint_base64: data.fingerprint_fmd,
       date_of_birth: `${data.year}-${data.month}-${data.day}`,
       civil_status: data.status,
       house_number: data.houseNumber,

@@ -2,7 +2,7 @@ export interface RegistrationTypedef {
   benefits: string
   day: string
   email: string
-  fingerprint_base64: string
+  fingerprint_fmd: string
   gender: string
   houseNumber: string
   image_base64: string

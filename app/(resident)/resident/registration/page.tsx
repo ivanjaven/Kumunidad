@@ -19,7 +19,7 @@ const initialFormData: RegistrationTypedef = {
   benefits: '',
   day: '',
   email: '',
-  fingerprint_base64: '',
+  fingerprint_fmd: '',
   gender: '',
   houseNumber: '',
   image_base64: '',

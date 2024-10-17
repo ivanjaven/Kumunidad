@@ -4,6 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Camera } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { Fingerprint } from 'lucide-react'
 
 interface Field {
   name: string
@@ -16,6 +18,14 @@ interface Field {
 interface GenerateDocumentFormProps {
   fields: Field[]
   onSubmit: (data: Record<string, any>) => void
+  onIdentify: () => void
+  isIdentifying: boolean
+  identifiedUser: {
+    residentId: number
+    fullName: string
+    purok: number
+    imageBase64: string
+  } | null
   isLoading?: boolean
   document: string
 }
@@ -23,11 +33,13 @@ interface GenerateDocumentFormProps {
 const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
   fields,
   onSubmit,
+  onIdentify,
+  isIdentifying,
+  identifiedUser,
   isLoading = false,
   document,
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>({})
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [documentImage, setDocumentImage] = useState<string>('')
 
   useEffect(() => {
@@ -48,6 +60,16 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
     loadImage()
   }, [document])
 
+  useEffect(() => {
+    if (identifiedUser) {
+      setFormData((prev) => ({
+        ...prev,
+        'Full Name': identifiedUser.fullName,
+        Purok: identifiedUser.purok,
+      }))
+    }
+  }, [identifiedUser])
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target
     setFormData((prev) => ({
@@ -66,17 +88,6 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit(formData)
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
   }
 
   if (isLoading) {
@@ -113,10 +124,10 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
       <div className="w-1/2 p-4">
         <div className="mb-6 flex justify-center">
           <div className="relative h-32 w-32">
-            {imageUrl ? (
+            {identifiedUser?.imageBase64 ? (
               <Image
-                src={imageUrl}
-                alt="Uploaded"
+                src={identifiedUser.imageBase64}
+                alt="User"
                 layout="fill"
                 objectFit="cover"
                 className="rounded-full"
@@ -126,16 +137,9 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
                 <Camera size={32} className="text-gray-400" />
               </div>
             )}
-            <input
-              title="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={true}
-              className="absolute inset-0 h-full w-full cursor-not-allowed opacity-0"
-            />
           </div>
         </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {fields.map((field) => (
             <div key={field.name} className="flex flex-col">
@@ -155,6 +159,7 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
                         onCheckedChange={(checked) =>
                           handleCheckboxChange(option, checked as boolean)
                         }
+                        disabled={!identifiedUser}
                       />
                       <label
                         htmlFor={`${field.name}-${option}`}
@@ -173,20 +178,30 @@ const GenerateDocumentForm: React.FC<GenerateDocumentFormProps> = ({
                   type={field.type}
                   value={formData[field.name] || ''}
                   onChange={handleChange}
-                  disabled={!field.editable}
+                  disabled={!field.editable || !identifiedUser}
                   required
                   className="mb-4"
                 />
               )}
             </div>
           ))}
-          <div className="mt-6 flex justify-center">
-            <button
-              type="submit"
+          <div className="mt-6 flex flex-row justify-center gap-6">
+            <Button
               className="mt-12 rounded bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800"
+              size="lg"
+              onClick={onIdentify}
+              disabled={isIdentifying}
+            >
+              <Fingerprint className="mr-2 h-6 w-6" />
+              {isIdentifying ? 'Identifying...' : 'Identify User'}
+            </Button>
+            <Button
+              size="lg"
+              className="mt-12 rounded bg-black px-6 py-2 text-white transition-colors hover:bg-gray-800"
+              disabled={!identifiedUser}
             >
               Generate Document
-            </button>
+            </Button>
           </div>
         </form>
       </div>
